@@ -21,9 +21,31 @@
  *  
  */
 
+
+File myFile;
+ 
+
 void setup() {
   // put your setup code here, to run once:
 
+
+  
+  Serial.begin(9600);
+  while (!Serial) {
+    ; // wait for serial port to connect
+    
+  }
+  Serial.println("Starting shit");
+
+  if (SD.begin()){
+    Serial.println("true");// you can add a parameter to specify the chipselect-pin which is defaulted as 10
+  }
+  if(SD.exists("gcode.txt")){
+    Serial.println("gcode.txt exists!!");
+    
+  }
+  
+  
 }
 
 void loop() {
