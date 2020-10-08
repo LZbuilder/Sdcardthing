@@ -37,8 +37,8 @@ void setup() {
   }
   Serial.println("Starting shit");
 
-  if (SD.begin()){
-    Serial.println("true");// you can add a parameter to specify the chipselect-pin which is defaulted as 10
+  if (SD.begin()){ // you can add a parameter to specify the chipselect-pin which is defaulted as 10
+    Serial.println("true");
   }
   if(SD.exists("gcode.txt")){
     Serial.println("gcode.txt exists!!");
