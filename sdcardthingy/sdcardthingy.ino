@@ -5,8 +5,7 @@
  * 
  * to begin I need to look
  */
-#include <SPI.h>
-#include <SD.h>
+
 /*
  * https://www.arduino.cc/en/Reference/SDCardNotes
  * Notes: 
@@ -21,7 +20,8 @@
  *  
  */
 
-
+#include <SPI.h>
+#include <SD.h>
 File myFile;
  
 
@@ -37,14 +37,21 @@ void setup() {
   }
   Serial.println("Starting shit");
 
-  if (SD.begin()){ // you can add a parameter to specify the chipselect-pin which is defaulted as 10
+  if (!SD.begin(4)){ // you can add a parameter to specify the chipselect-pin which is defaulted as 10
     Serial.println("true");
   }
   if(SD.exists("gcode.txt")){
     Serial.println("gcode.txt exists!!");
     
   }
-  myfile = SD.open("example
+
+  //read from file
+  myfile = SD.open("gcode.txt", FILE_READ);
+  Serial.println("trying to read this shit.");
+  while (myFile.available()){
+    Serial.write(myFile.read());
+    
+  }
   
 }
 
