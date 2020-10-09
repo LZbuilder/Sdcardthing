@@ -44,7 +44,7 @@ void setup() {
     Serial.println("gcode.txt exists!!");
     
   }
-  
+  myfile = SD.open("example
   
 }
 
