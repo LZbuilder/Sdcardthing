@@ -1,61 +1,61 @@
 /*
- * Now I must make an
- * annoying ass piece of
- * code for my friend
- * 
- * to begin I need to look
+  SD card read/write
+ 
+ This example shows how to read and write data to and from an SD card file
+ The circuit:
+ * SD card attached to SPI bus as follows:
+ ** MOSI - pin 11
+ ** MISO - pin 12
+ ** CLK - pin 13
+ ** CS - pin 4 (for MKRZero SD: SDCARD_SS_PIN)
+ 
+ created   Nov 2010
+ by David A. Mellis
+ modified 9 Apr 2012
+ by Tom Igoe
+ 
+ This example code is in the public domain.
+ 
  */
-
-/*
- * https://www.arduino.cc/en/Reference/SDCardNotes
- * Notes: 
- *  here are the pins a nano uses digital pins 11, 12, and 13.
- *  While the Mega uses 50, 51, and 52
- *  Arduino Micro uses pins 14, 15, and 16.
- *  Additionally, another pin must be used to select the SD card
- *  You must use the 8.3 format when naming the sd card!!!
- *    EXAMPLE "NAME001.EXT" where “NAME001” is an 
- *    8 character or fewer string, and “EXT” is a 3 
- *    character extension
- *  
- */
-
+ 
 #include <SPI.h>
 #include <SD.h>
+ 
 File myFile;
  
-
 void setup() {
-  // put your setup code here, to run once:
-
-
-  
+  // Open serial communications and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect
-    
+    ; // wait for serial port to connect. Needed for native USB port only
   }
-  Serial.println("Starting shit");
+ 
+ 
+  Serial.print("Initializing SD card...");
+ 
+  if (!SD.begin(4)) {
+    Serial.println("initialization failed!");
+    while (1);
+  }
+  Serial.println("initialization done.");
 
-  if (!SD.begin(4)){ // you can add a parameter to specify the chipselect-pin which is defaulted as 10?maybe
-    Serial.println("true");
+  // re-open the file for reading:
+  myFile = SD.open("gcode.txt");
+  if (myFile) {
+    Serial.println("gcode.txt:");
+ 
+    // read from the file until there's nothing else in it:
+    while (myFile.available()) {
+      Serial.write(myFile.read());
+    }
+    // close the file:
+    myFile.close();
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening test.txt");
   }
-  if(SD.exists("gcode.txt")){
-    Serial.println("gcode.txt exists!!");
-    
-  }
-
-  //read from file
-  myfile = SD.open("gcode.txt", FILE_READ);
-  Serial.println("trying to read this shit.");
-  while (myFile.available()){
-    Serial.write(myFile.read());
-    
-  }
-  
 }
-
+ 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  // nothing happens after setup
 }
