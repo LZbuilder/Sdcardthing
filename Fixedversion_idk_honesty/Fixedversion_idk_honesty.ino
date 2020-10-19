@@ -7,12 +7,12 @@ File myFile;
 
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
-double g;
+double g = 0;
 String gval = "";
 String xval = "";
 String yval = "";
-double x; //end result of what comes after x
-double y; //end result of what comes after y
+double x = 0; //end result of what comes after x
+double y = 0; //end result of what comes after y
 char singleletterchar; int singleletterint;
 String multiple[] = {};
 int i;
@@ -44,6 +44,8 @@ void setup() {
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
       gval = "";
+      xval = "";
+      yval = "";
       singleletterint = myFile.read(); //gets a byte
       singleletterchar = char(singleletterint); //makes byte to char
 
@@ -68,8 +70,35 @@ void setup() {
               }
               singleletterint = myFile.read(); //gets a byte
               singleletterchar = char(singleletterint);
-              if (isDigit(singleletterchar)){
-                
+              if (isDigit(singleletterchar)) {
+                while (isDigit(singleletterchar) || singleletterchar == '.') {
+                  xval += singleletterchar;
+                  singleletterint = myFile.read(); //gets a byte
+                  singleletterchar = char(singleletterint);
+                }
+                //Serial.println(xval);
+                x = xval.toDouble();
+                Serial.println(x);
+
+                singleletterint = myFile.read(); //gets a byte
+                singleletterchar = char(singleletterint);
+
+                if (singleletterchar == 'Y') {
+                  singleletterint = myFile.read(); //gets a byte
+                  singleletterchar = char(singleletterint);
+                  if (isDigit(singleletterchar)) {
+                    while (isDigit(singleletterchar) || singleletterchar == '.') {
+                      yval += singleletterchar;
+                      singleletterint = myFile.read(); //gets a byte
+                      singleletterchar = char(singleletterint);
+                    }
+                    //Serial.println(yval);
+                    y = yval.toDouble();
+                    Serial.println(y);
+                  }
+                }
+
+
               }
             }
 
