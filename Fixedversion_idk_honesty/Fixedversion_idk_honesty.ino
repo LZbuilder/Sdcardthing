@@ -26,6 +26,7 @@ void setup() {
     ; //Wait for serial monitor to be opened
   }
 
+
   Serial.print("Initializing SD card...");
 
   if (!SD.begin(4)) {
@@ -78,7 +79,7 @@ void setup() {
                 }
                 //Serial.println(xval);
                 x = xval.toDouble();
-                Serial.println(x);
+                //Serial.println(x);
 
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
@@ -94,7 +95,8 @@ void setup() {
                     }
                     //Serial.println(yval);
                     y = yval.toDouble();
-                    Serial.println(y);
+                    //Serial.println(y);
+                    
                   }
                 }
 
