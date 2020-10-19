@@ -7,7 +7,7 @@ File myFile;
 
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
-String g;
+double g;
 String gval = "";
 String xval = "";
 String yval = "";
@@ -44,13 +44,38 @@ void setup() {
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
 
-      singleletterint = myFile.read();
-      singleletterchar = char(singleletterint);
-      
+      singleletterint = myFile.read(); //gets a byte
+      singleletterchar = char(singleletterint); //makes byte to char
+
+      if (singleletterchar = 'G') {
+        Serial.println('G');
+        singleletterint = myFile.read(); //gets a byte
+        singleletterchar = char(singleletterint); //makes byte to char
+
+
+
+      }
+
 
     }
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
 }
+}
+
 
 void loop() {
   // put your main code here, to run repeatedly:
