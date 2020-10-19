@@ -43,38 +43,27 @@ void setup() {
 
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
-
       singleletterint = myFile.read(); //gets a byte
       singleletterchar = char(singleletterint); //makes byte to char
-
-      if (singleletterchar = 'G') {
-        Serial.println('G');
-        singleletterint = myFile.read(); //gets a byte
-        singleletterchar = char(singleletterint); //makes byte to char
+      switch (singleletterchar) {
+        case 'G':
 
 
+          break;
+        case 'X':
+        
+          break;
+        case 'Y':
 
+
+          break;
       }
 
 
     }
-
-
-
-
-
-
-
-
   }
-
-
-
-
-
-
 }
-}
+
 
 
 void loop() {
