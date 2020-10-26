@@ -1,3 +1,21 @@
+/* Using an uno:
+ **  Instructions for SD Card:
+ **    1. MOSI - pin 11
+ **    2. MISO - pin 12
+ **    3. CS - pin 10
+ **    4. SCLK - 13
+ **    5. Connect ground and 3.3v or 5v
+ **  
+ **  Instructions for LCD: 
+ **   1. RS
+ **   2.
+ **  
+ */
+
+
+
+
+#include <LiquidCrystal.h>
 #include <SPI.h>
 #include <SD.h>
 
@@ -29,7 +47,7 @@ void setup() {
 
   Serial.print("Initializing SD card...");
 
-  if (!SD.begin(4)) {
+  if (!SD.begin(10)) { //I made the css pin go to digital pin 10 :)
     Serial.println("initialization failed!");
     while (1);
   }
@@ -37,6 +55,23 @@ void setup() {
   Serial.println("initialization done.");
 
   //open file for reading
+  
+}
+
+
+
+void loop() {
+
+
+}
+
+
+void lcdsetup(){
+  // lcd(RS, E, D4, D5, D6, D7)
+  
+}
+
+void gcodereader(){
   myFile = SD.open("gcode.txt");
 
   if (myFile) {
@@ -113,14 +148,4 @@ void setup() {
       }
     }
   }
-}
-
-
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-  //nothing!
-
-
 }
