@@ -7,7 +7,7 @@
  **    5. Connect ground and 3.3v or 5v
  **  
  **  Instructions for LCD: 
- **   1. RS
+ **   1. RS 
  **   2.
  **  
  */
