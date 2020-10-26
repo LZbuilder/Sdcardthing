@@ -1,14 +1,15 @@
-/* Instuctions for SD Card:
- *  1. MOSI - pin 11
- *  2. MISO - pin 12
- *  3. CS - pin 4
- *  4. SCLK - 13
- *  5. Connect ground and 3.3v or 5v
- *  
- *  
- *  
- *  
- *  
+/* Using an uno:
+ **  Instructions for SD Card:
+ **    1. MOSI - pin 11
+ **    2. MISO - pin 12
+ **    3. CS - pin 10
+ **    4. SCLK - 13
+ **    5. Connect ground and 3.3v or 5v
+ **  
+ **  Instructions for LCD: 
+ **   1. RS
+ **  
+ **  
  */
 
 
@@ -46,7 +47,7 @@ void setup() {
 
   Serial.print("Initializing SD card...");
 
-  if (!SD.begin(4)) {
+  if (!SD.begin(10)) { //I made the css pin go to digital pin 10 :)
     Serial.println("initialization failed!");
     while (1);
   }
