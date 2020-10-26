@@ -1,3 +1,19 @@
+/* Instuctions for SD Card:
+ *  1. MOSI - pin 11
+ *  2. MISO - pin 12
+ *  3. CS - pin 4
+ *  4. SCLK - 13
+ *  5. Connect ground and 3.3v or 5v
+ *  
+ *  
+ *  
+ *  
+ *  
+ */
+
+
+
+
 #include <LiquidCrystal.h>
 #include <SPI.h>
 #include <SD.h>
@@ -44,15 +60,13 @@ void setup() {
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  
-  //nothing!
 
 
 }
 
 
 void lcdsetup(){
+  // lcd(RS, E, D4, D5, D6, D7)
   
 }
 
