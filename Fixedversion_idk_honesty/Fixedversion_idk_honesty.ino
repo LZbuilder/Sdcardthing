@@ -1,3 +1,4 @@
+#include <LiquidCrystal.h>
 #include <SPI.h>
 #include <SD.h>
 
@@ -37,6 +38,25 @@ void setup() {
   Serial.println("initialization done.");
 
   //open file for reading
+  
+}
+
+
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  
+  //nothing!
+
+
+}
+
+
+void lcdsetup(){
+  
+}
+
+void gcodereader(){
   myFile = SD.open("gcode.txt");
 
   if (myFile) {
@@ -113,14 +133,4 @@ void setup() {
       }
     }
   }
-}
-
-
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-  //nothing!
-
-
 }
