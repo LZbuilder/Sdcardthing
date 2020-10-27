@@ -68,7 +68,7 @@ void loop() {
 
 void lcdsetup(){
   // lcd(RS, E, D4, D5, D6, D7)
-  LiquidCrystal lcd (8, 9, 5, 6, 7, 8);
+  LiquidCrystal lcd (8, 9, 4, 5, 6, 7);
   int numRows = 2;
   int numCols = 16;
 }
