@@ -1,13 +1,13 @@
 /* Instuctions for SD Card:
  *  1. Connect - ground and 3.3v or 5v
- *  2. CS - pin 4
+ *  2. CS - pin 10
  *  3. MOSI - pin 11
  *  4. SCK - 13
  *  5. MISO - pin 12
  *  
  * Instructions for lcd?
- * (RS, E, D4, D5, D6, D7)
- * (8, 9, 5, 6, 7, 8)
+ *  (RS, E, D4, D5, D6, D7)
+ *  (8, 9, 4, 5, 6, 7)
  *  
  *  
  */
