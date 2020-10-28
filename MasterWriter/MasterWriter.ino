@@ -22,7 +22,7 @@
 File myFile;
 
 
-int delaytime = 1000;
+int delaytime = 10;
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
 double g = 0;
@@ -132,7 +132,7 @@ void gcodereader() {
                 Wire.write(xwholenumber);              // sends one byte
 
                 Wire.write(xremainder);  // sends one byte
-                Wire.endTransmission();    // 
+                Wire.endTransmission();    //
 
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
@@ -155,7 +155,10 @@ void gcodereader() {
                     Wire.write(ywholenumber);              // sends one byte
 
                     Wire.write(yremainder);
-                    Wire.endTransmission();    // 
+                    Wire.endTransmission();    //
+
+
+                    
 
                   }
                 }
@@ -180,6 +183,7 @@ int rem(double remainder) {
   String rema = String(remainder);
   int lengthrema = rema.length();
   String resultstring = "";
+
   for (int i = 0; i < lengthrema; i++) {
     if (rema[i] == ".") {
       i++;
