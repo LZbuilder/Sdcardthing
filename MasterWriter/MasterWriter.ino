@@ -29,8 +29,14 @@ double g = 0;
 String gval = "";
 String xval = "";
 String yval = "";
+
 double x = 0; //end result of what comes after x
 double y = 0; //end result of what comes after y
+int xwholenumber;
+int xremainder;
+int ywholenumber;
+int yremainder;
+
 char singleletterchar; int singleletterint;
 String multiple[] = {};
 int i;
@@ -117,6 +123,8 @@ void gcodereader() {
                 }
                 //Serial.println(xval);
                 x = xval.toDouble();
+                xwholenumber = int(x); // or you can just send it over a byte
+                xremainder = rem(x); // I made a function to find what is after the decimal point!
                 //Serial.println(x);
 
                 singleletterint = myFile.read(); //gets a byte
@@ -133,6 +141,8 @@ void gcodereader() {
                     }
                     //Serial.println(yval);
                     y = yval.toDouble();
+                    ywholenumber = int(y); // or you can just send it over a byte
+                    yremainder = rem(y); // I made a function to find what is after the decimal point!
                     //Serial.println(y);
 
                   }
@@ -151,4 +161,26 @@ void gcodereader() {
       }
     }
   }
+}
+
+int rem(double remainder) {
+  int result = 0;
+  String rema = String(remainder);
+  int lengthrema = rema.length();
+  String resultstring = "";
+  for (int i = 0; i < lengthrema; i++) {
+    if (rema[i] == ".") {
+      i++;
+      if (isDigit(rema[i])) {
+        while (isDigit(rema[i]) || i < lengthrema){
+          resultstring += rema[i];
+          i++;
+        }
+        result = resultstring.toInt();
+      }
+    }
+  }
+
+
+  return result;
 }
