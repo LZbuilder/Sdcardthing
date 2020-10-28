@@ -22,7 +22,7 @@
 File myFile;
 
 
-
+int delaytime = 1000;
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
 double g = 0;
@@ -88,6 +88,7 @@ void gcodereader() {
 
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
+      delay(delaytime);
       gval = "";
       xval = "";
       yval = "";
