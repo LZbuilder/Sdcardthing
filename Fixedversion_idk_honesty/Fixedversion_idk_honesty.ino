@@ -14,7 +14,7 @@
 
 
 
-
+#include <Wire.h>
 #include <LiquidCrystal.h>
 #include <SPI.h>
 #include <SD.h>
