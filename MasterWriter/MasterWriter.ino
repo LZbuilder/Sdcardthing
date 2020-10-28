@@ -126,6 +126,12 @@ void gcodereader() {
                 xwholenumber = int(x); // or you can just send it over a byte
                 xremainder = rem(x); // I made a function to find what is after the decimal point!
                 //Serial.println(x);
+                Wire.beginTransmission(4); // transmit to device #4
+
+                Wire.write(xwholenumber);              // sends one byte
+
+                Wire.write(xremainder);  // sends one byte
+                Wire.endTransmission();    // 
 
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
@@ -144,6 +150,11 @@ void gcodereader() {
                     ywholenumber = int(y); // or you can just send it over a byte
                     yremainder = rem(y); // I made a function to find what is after the decimal point!
                     //Serial.println(y);
+                    Wire.beginTransmission(4); // transmit to device #4
+                    Wire.write(ywholenumber);              // sends one byte
+
+                    Wire.write(yremainder);
+                    Wire.endTransmission();    // 
 
                   }
                 }
@@ -172,7 +183,7 @@ int rem(double remainder) {
     if (rema[i] == ".") {
       i++;
       if (isDigit(rema[i])) {
-        while (isDigit(rema[i]) || i < lengthrema){
+        while (isDigit(rema[i]) || i < lengthrema) {
           resultstring += rema[i];
           i++;
         }
