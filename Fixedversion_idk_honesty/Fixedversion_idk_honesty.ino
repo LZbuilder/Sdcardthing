@@ -55,6 +55,7 @@ void setup() {
   Serial.println("initialization done.");
 
   //open file for reading
+  gcodereader();
   
 }
 
