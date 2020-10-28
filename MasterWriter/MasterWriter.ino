@@ -20,6 +20,7 @@
 #include <SD.h>
 
 File myFile;
+boolean rev = true;
 
 
 int delaytime = 10;
@@ -62,6 +63,9 @@ void setup() {
 
   //open file for reading
   gcodereader();
+  Wire.begin(4);                // join i2c bus with address #4
+  Wire.onReceive(receiveEvent); // register event
+  Serial.begin(9600);
 
 }
 
@@ -88,6 +92,7 @@ void gcodereader() {
 
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
+      rev = false;
       delay(delaytime);
       gval = "";
       xval = "";
@@ -156,9 +161,13 @@ void gcodereader() {
 
                     Wire.write(yremainder);
                     Wire.endTransmission();    //
+                    //Wait to recieve something
+                    while (!rev) {
+
+                      Serial.println("waiting to receive G");
+                    }
 
 
-                    
 
                   }
                 }
@@ -199,4 +208,8 @@ int rem(double remainder) {
 
 
   return result;
+}
+
+void receiveEvent() {
+  rev = true;
 }
