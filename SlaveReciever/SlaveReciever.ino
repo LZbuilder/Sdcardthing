@@ -33,6 +33,7 @@ void setup() {
   
 Serial.begin(9600);
 
+<<<<<<< Updated upstream
 Stepper1.setSpeed(5);
 servoy.attach(9);
 
@@ -53,6 +54,36 @@ void loop() {
   // speed = distance/time 
     for (Steppercurrentpos = 0; pos <= 180; pos += 1){ //not sure how to make it work but,while the steppers current pos is less than the desired pos make it go up
     }
+=======
+void loop() {
+  double rawdeg = ((atan(xValue / yValue) * 180 / 3.14159265) + 0);
+  calculateddeg = rawdeg - previousdeg;
+  degdiff = abs(calculateddeg);
+  //Stepper1.setSpeed(pow((degdiff / ), 1.00001));
+  Stepper1.step(((calculateddeg / 5.661111) * 32) * 3);
+
+  double yD = (atan(Bedheight / yValue) * 180 / 3.14159265);
+  servoy.write(yD);
+  //xValue = random(0,200);
+  //yValue = random(0,200);
+  previousdeg = calculateddeg;
+}
+
+void receiveEvent() {
+  if (lukaval) {
+    String lukastring = String(Wire.read());
+    lukastring += ".";
+    lukastring += Wire.read();
+    xValue = lukastring.toDouble();
+    lukaval = false;
+  }
+  if (!lukaval) {
+    String lukastring = String(Wire.read());
+    lukastring += ".";
+    lukastring += String(Wire.read());
+    yValue = lukastring.toDouble();
+    lukaval = true;
+>>>>>>> Stashed changes
   }
 //  servoy.write(yD);
   xValue = random(0,200);
