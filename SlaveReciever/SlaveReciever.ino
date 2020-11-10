@@ -1,8 +1,8 @@
-
+#include <Wire.h>
 #include <Stepper.h>
 #include <Servo.h> 
 Servo servoy;
-
+boolean lukaval = true;
 int Bedheight = 60;//the height of the centerpoint of the rotating on the Y servo from the print bed
 double xValue = 20;// the numbers followed after G1  (example G1 X___ Y)
 double yValue = 20;// the numbers followed after G1 X (example G1 X Y___)   
@@ -39,6 +39,8 @@ servoy.attach(9);
 
 servoy.write(0);
 servoCurrentpos = 0;
+  Wire.begin(4);                // join i2c bus with address #4
+  Wire.onReceive(receiveEvent); // register event
 }
 
 void loop() {
@@ -49,9 +51,10 @@ void loop() {
   Serial.println(stepperNewdeg-stepperPreviousdeg);
    
     Stepper1.step(stepperCalculateddeg);
-  if (stepperCalculateddeg>0&& servoCalculateddeg>servoPreviousdeg){ // the calculated value for the stepper is more than 0 go forwards,the calculated value for the stepper is more than the last value make the angle more
+  if ((stepperCalculateddeg > 0 )&& (servoCalculateddeg > servopreviousdeg));{ // the calculated value for the stepper is more than 0 go forwards,the calculated value for the stepper is more than the last value make the angle more
   Serial.println("moving counter clock wise");
   // speed = distance/time 
+<<<<<<< HEAD
     for (Steppercurrentpos = 0; pos <= 180; pos += 1){ //not sure how to make it work but,while the steppers current pos is less than the desired pos make it go up
     }
 =======
@@ -84,10 +87,27 @@ void receiveEvent() {
     yValue = lukastring.toDouble();
     lukaval = true;
 >>>>>>> Stashed changes
+=======
+    for (Steppercurrentpos = 0; pos <= 180; pos += 1) //not sure how to make it work but,while the steppers current pos is less than the desired pos make it go up
+>>>>>>> parent of 65dd970... Update SlaveReciever.ino
   }
 //  servoy.write(yD);
   xValue = random(0,200);
   yValue = random(0,200);
  stepperPreviousdeg = stepperNewdeg; // sets the steppers previous degre to the last degre used
  servoPreviousdeg = servoNewdeg; // does the same but for the servo
+}
+void receiveEvent() {
+  if (lukaval) {
+    String lukastring = String(Wire.read());
+    lukastring += Wire.read();
+    xValue = lukastring.toDouble();
+    lukaval = false;
+  }
+  if (!lukaval) {
+    String lukastring = String(Wire.read());
+    lukastring += Wire.read();
+    yValue = lukastring.toDouble();
+    lukaval = true;
+  }
 }
