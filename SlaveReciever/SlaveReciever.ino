@@ -1,14 +1,16 @@
 #include <Wire.h>
 #include <Stepper.h>
 #include <Servo.h>
+
+
 Servo servoy;
 boolean lukaval = true;
-int Bedheight = 60; /*the height of the centerpoint of 
-the rotating on the Y servo from the print bed */
-double xValue = 20;/*the numbers followed after G1  
-(example G1 X___ Y) */
-double yValue = 20;/* the numbers followed after 
-G1 X (example G1 X Y___)*/
+int Bedheight = 60; /*the height of the centerpoint of
+  the rotating on the Y servo from the print bed */
+double xValue = 20;/*the numbers followed after G1
+  (example G1 X___ Y) */
+double yValue = 20;/* the numbers followed after
+  G1 X (example G1 X Y___)*/
 int time = 1;
 //  ↑ varibles used by everything? // I don't get this comment
 
@@ -21,8 +23,8 @@ double stepperCurrentpos = 0;
 
 //  ↑ varibles used by the stepper motors
 
-double servoNewsdeg = 0 ; /* the new degree for 
-the servo,formaly called yD */
+double servoNewsdeg = 0 ; /* the new degree for
+  the servo,formaly called yD */
 double servoCalculateddeg = 0;
 double servoPreviousdeg = 0;
 double servoCurrentpos = 0;
