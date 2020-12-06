@@ -9,11 +9,19 @@
     (RS, E, D4, D5, D6, D7)
     (8, 9, 4, 5, 6, 7)
 
+   Instructions for Rotary Encoder!!
+    We need two digital pins for this
 
 */
 
+#define outputA 3
+#define outputB 2
+int counter = 0; 
+int aState;
+int aLastState;  
+char encodesw = "A0";
 
-
+ 
 #include <Wire.h>
 #include <LiquidCrystal.h>
 #include <SPI.h>
@@ -30,6 +38,8 @@ double g = 0;
 String gval = "";
 String xval = "";
 String yval = "";
+String gcodefile = "gcode.txt";
+
 
 double x = 0; //end result of what comes after x
 double y = 0; //end result of what comes after y
@@ -60,12 +70,23 @@ void setup() {
   }
 
   Serial.println("initialization done.");
-
-  //open file for reading
-  gcodereader();
   Wire.begin(4);                // join i2c bus with address #4
   Wire.onReceive(receiveEvent); // register event
   Serial.begin(9600);
+  
+  pinMode (outputA,INPUT);
+  pinMode (outputB,INPUT);
+  pinMode (encodesw, INPUT);
+  
+  aLastState = digitalRead(outputA);    
+  
+   // Reads the initial state of the outputA
+   aLastState = digitalRead(outputA); 
+  //open file for reading
+  
+  //use file
+  gcodereader();
+
 
 }
 
@@ -84,7 +105,34 @@ void lcdsetup() {
   int numCols = 16;
 }
 
+
+void gcodefinder() {
+  aState = digitalRead(outputA); // Reads the "current" state of the outputA
+   // If the previous and the current state of the outputA are different, that means a Pulse has occured
+   if (aState != aLastState){     
+     // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
+     if (digitalRead(outputB) != aState) { 
+       counter ++;
+     } else {
+       counter --;
+     }
+     Serial.print("Position: ");
+     Serial.println(counter);
+   } 
+   aLastState = aState; // Updates the previous state of the outputA with the current state
+}
+
+
+
+
+
+
+
 void gcodereader() {
+  
+  
+  
+  //Before we do ANY Of the code below we must find what file we want until we press the switch!
   myFile = SD.open("gcode.txt");
 
   if (myFile) {
@@ -211,5 +259,6 @@ int rem(double remainder) {
 }
 
 void receiveEvent() {
-  rev = true;
+  rev = true; // this is for when it recieves anything from the slave arduino...
+              // it will set rev to true meaning it is ok to send the next piece of gcode!
 }
