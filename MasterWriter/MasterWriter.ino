@@ -16,12 +16,12 @@
 
 #define outputA 3
 #define outputB 2
-int counter = 0; 
+int counter = 0;
 int aState;
-int aLastState;  
+int aLastState;
 char encodesw = "A0";
 
- 
+
 #include <Wire.h>
 #include <LiquidCrystal.h>
 #include <SPI.h>
@@ -38,15 +38,20 @@ double g = 0;
 String gval = "";
 String xval = "";
 String yval = "";
+String zval = "";
 String gcodefile = "gcode.txt";
 
 
 double x = 0; //end result of what comes after x
 double y = 0; //end result of what comes after y
+double z = 0;
 int xwholenumber;
 int xremainder;
 int ywholenumber;
 int yremainder;
+int zwholenumber;
+int zremainder;
+
 
 char singleletterchar; int singleletterint;
 String multiple[] = {};
@@ -73,17 +78,17 @@ void setup() {
   Wire.begin(4);                // join i2c bus with address #4
   Wire.onReceive(receiveEvent); // register event
   Serial.begin(9600);
-  
-  pinMode (outputA,INPUT);
-  pinMode (outputB,INPUT);
+
+  pinMode (outputA, INPUT);
+  pinMode (outputB, INPUT);
   pinMode (encodesw, INPUT);
-  
-  aLastState = digitalRead(outputA);    
-  
-   // Reads the initial state of the outputA
-   aLastState = digitalRead(outputA); 
+
+  aLastState = digitalRead(outputA);
+
+  // Reads the initial state of the outputA
+  aLastState = digitalRead(outputA);
   //open file for reading
-  
+
   //use file
   gcodereader();
 
@@ -108,18 +113,18 @@ void lcdsetup() {
 
 void gcodefinder() {
   aState = digitalRead(outputA); // Reads the "current" state of the outputA
-   // If the previous and the current state of the outputA are different, that means a Pulse has occured
-   if (aState != aLastState){     
-     // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-     if (digitalRead(outputB) != aState) { 
-       counter ++;
-     } else {
-       counter --;
-     }
-     Serial.print("Position: ");
-     Serial.println(counter);
-   } 
-   aLastState = aState; // Updates the previous state of the outputA with the current state
+  // If the previous and the current state of the outputA are different, that means a Pulse has occured
+  if (aState != aLastState) {
+    // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
+    if (digitalRead(outputB) != aState) {
+      counter ++;
+    } else {
+      counter --;
+    }
+    Serial.print("Position: ");
+    Serial.println(counter);
+  }
+  aLastState = aState; // Updates the previous state of the outputA with the current state
 }
 
 
@@ -129,9 +134,9 @@ void gcodefinder() {
 
 
 void gcodereader() {
-  
-  
-  
+
+
+
   //Before we do ANY Of the code below we must find what file we want until we press the switch!
   myFile = SD.open("gcode.txt");
 
@@ -209,12 +214,35 @@ void gcodereader() {
 
                     Wire.write(yremainder);
                     Wire.endTransmission();    //
-                    //Wait to recieve something
-                    while (!rev) {
+                    if (singleletterchar == 'Z') {
+                      singleletterint = myFile.read(); //gets a byte
+                      singleletterchar = char(singleletterint);
+                      if (isDigit(singleletterchar)) {
+                        while (isDigit(singleletterchar) || singleletterchar == '.') {
+                          zval += singleletterchar;
+                          singleletterint = myFile.read(); //gets a byte
+                          singleletterchar = char(singleletterint);
+                        }
+                        //Serial.println(yval);
+                        z = zval.toDouble();
+                        zwholenumber = int(z); // or you can just send it over a byte
+                        zremainder = rem(z); // I made a function to find what is after the decimal point!
+                        //Serial.println(z);
+                        Wire.beginTransmission(4); // transmit to device #4
+                        Wire.write(zwholenumber);              // sends one byte
 
-                      Serial.println("waiting to receive G");
+                        Wire.write(zremainder);
+                        Wire.endTransmission();    //
+                        //Wait to recieve something
+                        while (!rev) {
+
+                          Serial.println("waiting to receive G");
+                        }
+
+
+
+                      }
                     }
-
 
 
                   }
@@ -222,43 +250,42 @@ void gcodereader() {
 
 
               }
+              else {
+                break;
+              }
+              break;
             }
-
-
           }
-          else {
-            break;
-          }
-          break;
       }
     }
   }
 }
 
-int rem(double remainder) {
-  int result = 0;
-  String rema = String(remainder);
-  int lengthrema = rema.length();
-  String resultstring = "";
 
-  for (int i = 0; i < lengthrema; i++) {
-    if (rema[i] == ".") {
-      i++;
-      if (isDigit(rema[i])) {
-        while (isDigit(rema[i]) || i < lengthrema) {
-          resultstring += rema[i];
-          i++;
+  int rem(double remainder) {
+    int result = 0;
+    String rema = String(remainder);
+    int lengthrema = rema.length();
+    String resultstring = "";
+
+    for (int i = 0; i < lengthrema; i++) {
+      if (rema[i] == ".") {
+        i++;
+        if (isDigit(rema[i])) {
+          while (isDigit(rema[i]) || i < lengthrema) {
+            resultstring += rema[i];
+            i++;
+          }
+          result = resultstring.toInt();
         }
-        result = resultstring.toInt();
       }
     }
+
+
+    return result;
   }
 
-
-  return result;
-}
-
-void receiveEvent() {
-  rev = true; // this is for when it recieves anything from the slave arduino...
-              // it will set rev to true meaning it is ok to send the next piece of gcode!
-}
+  void receiveEvent() {
+    rev = true; // this is for when it recieves anything from the slave arduino...
+    // it will set rev to true meaning it is ok to send the next piece of gcode!
+  }
