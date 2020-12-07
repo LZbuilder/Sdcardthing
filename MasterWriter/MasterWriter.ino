@@ -14,24 +14,24 @@
 
 */
 
-#define outputA 3
-#define outputB 2
-int counter = 0;
-int aState;
-int aLastState;
-char encodesw = "A0";
+
 
 
 #include <Wire.h>
 #include <LiquidCrystal.h>
+// lcd(RS, E, D4, D5, D6, D7)
+LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 #include <SPI.h>
 #include <SD.h>
 
+const int chipSelect = 10;
 File myFile;
+
 boolean rev = true;
 
+int amountrecived = 0;
 
-int delaytime = 10;
+const int delaytime = 10;
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
 double g = 0;
@@ -67,11 +67,19 @@ void setup() {
   }
 
 
-  Serial.print("Initializing SD card...");
+  Serial.println("Initializing SD card...");
 
-  if (!SD.begin(4)) {
-    Serial.println("initialization failed!");
-    while (1);
+  if (!SD.begin(chipSelect)) {
+    Serial.println("initialization failed. Things to check:");
+
+    Serial.println("1. is a card inserted?");
+
+    Serial.println("2. is your wiring correct?");
+
+    Serial.println("3. did you change the chipSelect pin to match your shield or module?");
+
+    Serial.println("Note: press reset or reopen this serial monitor after fixing your issue!");
+    while (true);
   }
 
   Serial.println("initialization done.");
@@ -79,14 +87,12 @@ void setup() {
   Wire.onReceive(receiveEvent); // register event
   Serial.begin(9600);
 
-  pinMode (outputA, INPUT);
-  pinMode (outputB, INPUT);
-  pinMode (encodesw, INPUT);
 
-  aLastState = digitalRead(outputA);
 
-  // Reads the initial state of the outputA
-  aLastState = digitalRead(outputA);
+
+
+
+  lcdsetup(); //Setup the LCD for Debugging
   //open file for reading
 
   //use file
@@ -104,27 +110,15 @@ void loop() {
 
 
 void lcdsetup() {
-  // lcd(RS, E, D4, D5, D6, D7)
-  LiquidCrystal lcd (8, 9, 4, 5, 6, 7);
+
   int numRows = 2;
   int numCols = 16;
+  lcd.begin(numRows, numCols);
 }
 
 
 void gcodefinder() {
-  aState = digitalRead(outputA); // Reads the "current" state of the outputA
-  // If the previous and the current state of the outputA are different, that means a Pulse has occured
-  if (aState != aLastState) {
-    // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-    if (digitalRead(outputB) != aState) {
-      counter ++;
-    } else {
-      counter --;
-    }
-    Serial.print("Position: ");
-    Serial.println(counter);
-  }
-  aLastState = aState; // Updates the previous state of the outputA with the current state
+  
 }
 
 
@@ -262,30 +256,33 @@ void gcodereader() {
 }
 
 
-  int rem(double remainder) {
-    int result = 0;
-    String rema = String(remainder);
-    int lengthrema = rema.length();
-    String resultstring = "";
+int rem(double remainder) {
+  int result = 0;
+  String rema = String(remainder);
+  int lengthrema = rema.length();
+  String resultstring = "";
 
-    for (int i = 0; i < lengthrema; i++) {
-      if (rema[i] == ".") {
-        i++;
-        if (isDigit(rema[i])) {
-          while (isDigit(rema[i]) || i < lengthrema) {
-            resultstring += rema[i];
-            i++;
-          }
-          result = resultstring.toInt();
+  for (int i = 0; i < lengthrema; i++) {
+    if (rema[i] == ".") {
+      i++;
+      if (isDigit(rema[i])) {
+        while (isDigit(rema[i]) || i < lengthrema) {
+          resultstring += rema[i];
+          i++;
         }
+        result = resultstring.toInt();
       }
     }
-
-
-    return result;
   }
 
-  void receiveEvent() {
-    rev = true; // this is for when it recieves anything from the slave arduino...
-    // it will set rev to true meaning it is ok to send the next piece of gcode!
-  }
+
+  return result;
+}
+
+void receiveEvent() {
+  rev = true; // this is for when it recieves anything from the slave arduino...
+  // it will set rev to true meaning it is ok to send the next piece of gcode!
+  lcd.setCursor(0, 1);
+  lcd.print("Recived" + amountrecived);
+  amountrecived++;
+}
