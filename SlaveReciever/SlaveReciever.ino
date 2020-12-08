@@ -1,5 +1,6 @@
 #include <Wire.h>
 
+
 int lukaval = 1;
 double xval = 0;
 double yval = 0;
