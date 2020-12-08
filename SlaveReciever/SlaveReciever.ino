@@ -25,6 +25,10 @@ void receiveEvent() {
     lukastring += Wire.read();
     xval = lukastring.toDouble();
     lukaval = 2;
+    Wire.beginTransmission(4); // transmit to device #4
+
+    Wire.write(1);  // sends one byte
+    Wire.endTransmission();    // ends the transmission
   }
   if (lukaval == 2) {
     String lukastring = String(Wire.read());
@@ -32,7 +36,10 @@ void receiveEvent() {
     lukastring += Wire.read();
     yval = lukastring.toDouble();
     lukaval = 3;
+    Wire.beginTransmission(4); // transmit to device #4
 
+    Wire.write(1);  // sends one byte
+    Wire.endTransmission();
   }
   if (lukaval == 3) {
     String lukastring = String(Wire.read());
@@ -40,7 +47,10 @@ void receiveEvent() {
     lukastring += Wire.read();
     zval = lukastring.toDouble();
     lukaval = 1;
+    Wire.beginTransmission(4); // transmit to device #4
 
+    Wire.write(1);  // sends one byte
+    Wire.endTransmission();
   }
 
   lcd.setCursor(0, 0);
