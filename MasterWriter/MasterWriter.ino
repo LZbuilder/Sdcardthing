@@ -129,7 +129,7 @@ void gcodereader() {
 
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
-      if (rev) {
+      if (rev == true) {
 
 
         
