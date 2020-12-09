@@ -10,7 +10,7 @@
     (8, 9, 4, 5, 6, 7)
 
    Instructions for Rotary Encoder!!
-    We need two digital pins for this
+    We need three digital pins for this
 
 */
 
@@ -132,7 +132,7 @@ void gcodereader() {
       if (rev) {
 
 
-        rev = false;
+        
         delay(delaytime);
         gval = "";
         xval = "";
@@ -244,6 +244,7 @@ void gcodereader() {
               }
             }
         }
+        rev = false;
       }
       else {
         
