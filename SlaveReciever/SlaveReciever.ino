@@ -52,21 +52,6 @@ void receiveEvent() {
     Wire.endTransmission();
   }
 
-  lcd.setCursor(0, 0);
-  lcd.print("Xval = ");
-  lcd.setCursor(0, 1);
-  lcd.print(xval);
-  delay(500);
-  lcd.setCursor(0, 0);
-  lcd.print("Yval = ");
-  lcd.setCursor(0, 1);
-  lcd.print(yval);
-  delay(500);
-  lcd.setCursor(0, 0);
-  lcd.print("Zval = ");
-  lcd.setCursor(0, 1);
-  lcd.print(zval);
-  delay(500);
 
 
 
