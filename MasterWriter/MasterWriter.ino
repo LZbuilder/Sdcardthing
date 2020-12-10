@@ -273,7 +273,7 @@ int rem(double remainder) {
     }
   }
 
-
+  // result = 2; For degbugging
   return result;
 }
 
