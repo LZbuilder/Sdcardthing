@@ -225,10 +225,7 @@ void gcodereader() {
                           //Wire.write(zremainder);
                           //Wire.endTransmission();    //
                           //Wait to recieve something
-                          while (!rev) {
-
-                            Serial.println("waiting to receive G");
-                          }
+                          rev = false;
 
 
 
@@ -248,7 +245,7 @@ void gcodereader() {
               }
             }
         }
-        rev = false;
+        
       
     }
   }
