@@ -83,8 +83,8 @@ void setup() {
   }
 
   Serial.println("initialization done.");
-  Wire.begin(4);                // join i2c bus with address #4
-  Wire.onReceive(receiveEvent); // register event
+  //Wire.begin(4);                // join i2c bus with address #4
+  //Wire.onReceive(receiveEvent); // register event
   Serial.begin(9600);
 
 
@@ -126,14 +126,15 @@ void gcodereader() {
 
   if (myFile) {
     Serial.println("gcode.txt:");
-
+   
+    Serial.println(rev);
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
-      if (rev == true) {
+      if (rev) {
 
 
         
-        delay(delaytime);
+        //delay(delaytime);
         gval = "";
         xval = "";
         yval = "";
@@ -151,7 +152,7 @@ void gcodereader() {
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
               }
-              Serial.println(gval);
+              //Serial.println(gval);
               g = gval.toDouble();
 
               if (g == 1) {
@@ -170,14 +171,16 @@ void gcodereader() {
                   //Serial.println(xval);
                   x = xval.toDouble();
                   xwholenumber = int(x); // or you can just send it over a byte
-                  xremainder = rem(x); // I made a function to find what is after the decimal point!
+                  Serial.println(xwholenumber);
+                  xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
+                  Serial.println(xremainder);
                   //Serial.println(x);
-                  Wire.beginTransmission(4); // transmit to device #4
+                  //Wire.beginTransmission(4); // transmit to device #4
 
-                  Wire.write(xwholenumber); // sends one byte
+                  //Wire.write(xwholenumber); // sends one byte
 
-                  Wire.write(xremainder);  // sends one byte
-                  Wire.endTransmission();    // ends the transmission
+                  //Wire.write(xremainder);  // sends one byte
+                  //Wire.endTransmission();    // ends the transmission
 
                   singleletterint = myFile.read(); //gets a byte
                   singleletterchar = char(singleletterint);
@@ -194,13 +197,13 @@ void gcodereader() {
                       //Serial.println(yval);
                       y = yval.toDouble();
                       ywholenumber = int(y); // or you can just send it over a byte
-                      yremainder = rem(y); // I made a function to find what is after the decimal point!
+                      yremainder = rem(y, ywholenumber); // I made a function to find what is after the decimal point!
                       //Serial.println(y);
-                      Wire.beginTransmission(4); // transmit to device #4
-                      Wire.write(ywholenumber);              // sends one byte
+                      //Wire.beginTransmission(4); // transmit to device #4
+                      //Wire.write(ywholenumber);              // sends one byte
 
-                      Wire.write(yremainder);
-                      Wire.endTransmission();    //
+                      //Wire.write(yremainder);
+                      //Wire.endTransmission();    //
                       if (singleletterchar == 'Z') {
                         singleletterint = myFile.read(); //gets a byte
                         singleletterchar = char(singleletterint);
@@ -213,13 +216,13 @@ void gcodereader() {
                           //Serial.println(yval);
                           z = zval.toDouble();
                           zwholenumber = int(z); // or you can just send it over a byte
-                          zremainder = rem(z); // I made a function to find what is after the decimal point!
+                          zremainder = rem(z, zwholenumber); // I made a function to find what is after the decimal point!
                           //Serial.println(z);
-                          Wire.beginTransmission(4); // transmit to device #4
-                          Wire.write(zwholenumber);              // sends one byte
+                         // Wire.beginTransmission(4); // transmit to device #4
+                          //Wire.write(zwholenumber);              // sends one byte
 
-                          Wire.write(zremainder);
-                          Wire.endTransmission();    //
+                          //Wire.write(zremainder);
+                          //Wire.endTransmission();    //
                           //Wait to recieve something
                           while (!rev) {
 
@@ -244,7 +247,7 @@ void gcodereader() {
               }
             }
         }
-        rev = false;
+        //rev = false;
       }
       else {
         
@@ -254,26 +257,34 @@ void gcodereader() {
 }
 
 
-int rem(double remainder) {
+int rem(double remainder, int whole) {
+  int wholelen = String(whole).length();
   int result = 0;
   String rema = String(remainder);
   int lengthrema = rema.length();
   String resultstring = "";
+  
 
+  
   for (int i = 0; i < lengthrema; i++) {
-    if (rema[i] == ".") {
-      i++;
+  while (i < wholelen){
+    i++;
+  }
+    if (rema[i] == "." || isDigit(rema[i])) {
+      
       if (isDigit(rema[i])) {
         while (isDigit(rema[i]) || i < lengthrema) {
           resultstring += rema[i];
           i++;
         }
+        
         result = resultstring.toInt();
       }
     }
   }
 
-  // result = 2; For degbugging
+   //result = 2; //For degbugging
+  
   return result;
 }
 
