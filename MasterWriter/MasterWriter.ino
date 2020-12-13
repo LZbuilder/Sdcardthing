@@ -126,127 +126,129 @@ void gcodereader() {
 
   if (myFile) {
     Serial.println("gcode.txt:");
-   
+
     Serial.println(rev);
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
 
-      while (!rev){
+      while (!rev) {
         delay(1);
       }
-        
-        //delay(delaytime);
-        gval = "";
-        xval = "";
-        yval = "";
-        singleletterint = myFile.read(); //gets a byte
-        singleletterchar = char(singleletterint); //makes byte to char
 
-        switch (singleletterchar) {
-          case 'G':
-            singleletterint = myFile.read(); //gets a byte
-            singleletterchar = char(singleletterint);
+      //delay(delaytime);
+      gval = "";
+      xval = "";
+      yval = "";
+      singleletterint = myFile.read(); //gets a byte
+      singleletterchar = char(singleletterint); //makes byte to char
 
-            if (isDigit(singleletterchar)) {
-              while (isDigit(singleletterchar)) {
-                gval += singleletterchar;
+      switch (singleletterchar) {
+        case 'G':
+          singleletterint = myFile.read(); //gets a byte
+          singleletterchar = char(singleletterint);
+
+          if (isDigit(singleletterchar)) {
+            while (isDigit(singleletterchar)) {
+              gval += singleletterchar;
+              singleletterint = myFile.read(); //gets a byte
+              singleletterchar = char(singleletterint);
+            }
+            //Serial.println(gval);
+            g = gval.toDouble();
+
+            if (g == 1) {
+              while (singleletterchar != 'X') {
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
               }
-              //Serial.println(gval);
-              g = gval.toDouble();
-
-              if (g == 1) {
-                while (singleletterchar != 'X') {
+              singleletterint = myFile.read(); //gets a byte
+              singleletterchar = char(singleletterint);
+              if (isDigit(singleletterchar)) {
+                while (isDigit(singleletterchar) || singleletterchar == '.') {
+                  xval += singleletterchar;
                   singleletterint = myFile.read(); //gets a byte
                   singleletterchar = char(singleletterint);
                 }
+                //Serial.println(xval);
+                x = xval.toDouble();
+                xwholenumber = int(x); // or you can just send it over a byte
+                Serial.println(xwholenumber);
+                xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
+                Serial.println(xremainder);
+                //Serial.println(x);
+                Wire.beginTransmission(5); // transmit to device #4
+                
+                Wire.write(xwholenumber); // sends one byte
+                Wire.endTransmission();
+                Wire.beginTransmission(5);
+                Wire.write(xremainder);  // sends one byte
+                Wire.endTransmission();    // ends the transmission
+
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
-                if (isDigit(singleletterchar)) {
-                  while (isDigit(singleletterchar) || singleletterchar == '.') {
-                    xval += singleletterchar;
-                    singleletterint = myFile.read(); //gets a byte
-                    singleletterchar = char(singleletterint);
-                  }
-                  //Serial.println(xval);
-                  x = xval.toDouble();
-                  xwholenumber = int(x); // or you can just send it over a byte
-                  Serial.println(xwholenumber);
-                  xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
-                  Serial.println(xremainder);
-                  //Serial.println(x);
-                  //Wire.beginTransmission(4); // transmit to device #4
 
-                  //Wire.write(xwholenumber); // sends one byte
-
-                  //Wire.write(xremainder);  // sends one byte
-                  //Wire.endTransmission();    // ends the transmission
-
+                if (singleletterchar == 'Y') {
                   singleletterint = myFile.read(); //gets a byte
                   singleletterchar = char(singleletterint);
-
-                  if (singleletterchar == 'Y') {
-                    singleletterint = myFile.read(); //gets a byte
-                    singleletterchar = char(singleletterint);
-                    if (isDigit(singleletterchar)) {
-                      while (isDigit(singleletterchar) || singleletterchar == '.') {
-                        yval += singleletterchar;
-                        singleletterint = myFile.read(); //gets a byte
-                        singleletterchar = char(singleletterint);
-                      }
-                      //Serial.println(yval);
-                      y = yval.toDouble();
-                      ywholenumber = int(y); // or you can just send it over a byte
-                      yremainder = rem(y, ywholenumber); // I made a function to find what is after the decimal point!
-                      //Serial.println(y);
-                      //Wire.beginTransmission(4); // transmit to device #4
-                      //Wire.write(ywholenumber);              // sends one byte
-
-                      //Wire.write(yremainder);
-                      //Wire.endTransmission();    //
-                      if (singleletterchar == 'Z') {
-                        singleletterint = myFile.read(); //gets a byte
-                        singleletterchar = char(singleletterint);
-                        if (isDigit(singleletterchar)) {
-                          while (isDigit(singleletterchar) || singleletterchar == '.') {
-                            zval += singleletterchar;
-                            singleletterint = myFile.read(); //gets a byte
-                            singleletterchar = char(singleletterint);
-                          }
-                          //Serial.println(yval);
-                          z = zval.toDouble();
-                          zwholenumber = int(z); // or you can just send it over a byte
-                          zremainder = rem(z, zwholenumber); // I made a function to find what is after the decimal point!
-                          //Serial.println(z);
-                         // Wire.beginTransmission(4); // transmit to device #4
-                          //Wire.write(zwholenumber);              // sends one byte
-
-                          //Wire.write(zremainder);
-                          //Wire.endTransmission();    //
-                          //Wait to recieve something
-                          rev = false;
-
-
-
-                        }
-                      }
-
-
+                  if (isDigit(singleletterchar)) {
+                    while (isDigit(singleletterchar) || singleletterchar == '.') {
+                      yval += singleletterchar;
+                      singleletterint = myFile.read(); //gets a byte
+                      singleletterchar = char(singleletterint);
                     }
+                    //Serial.println(yval);
+                    y = yval.toDouble();
+                    ywholenumber = int(y); // or you can just send it over a byte
+                    yremainder = rem(y, ywholenumber); // I made a function to find what is after the decimal point!
+                    //Serial.println(y);
+                    //Wire.beginTransmission(4); // transmit to device #4
+                    //Wire.write(ywholenumber);              // sends one byte
+
+                    //Wire.write(yremainder);
+                    //Wire.endTransmission();
+                    rev = false;
+                    if (singleletterchar == 'Z') {
+                      singleletterint = myFile.read(); //gets a byte
+                      singleletterchar = char(singleletterint);
+                      if (isDigit(singleletterchar)) {
+                        while (isDigit(singleletterchar) || singleletterchar == '.') {
+                          zval += singleletterchar;
+                          singleletterint = myFile.read(); //gets a byte
+                          singleletterchar = char(singleletterint);
+                        }
+                        //Serial.println(yval);
+                        z = zval.toDouble();
+                        zwholenumber = int(z); // or you can just send it over a byte
+                        zremainder = rem(z, zwholenumber); // I made a function to find what is after the decimal point!
+                        //Serial.println(z);
+                        // Wire.beginTransmission(4); // transmit to device #4
+                        //Wire.write(zwholenumber);              // sends one byte
+
+                        //Wire.write(zremainder);
+                        //Wire.endTransmission();    //
+                        //Wait to recieve something
+
+
+
+
+                      }
+                    }
+
+
                   }
+                }
 
 
-                }
-                else {
-                  break;
-                }
+              }
+              else {
                 break;
               }
+              break;
             }
-        }
-        
-      
+          }
+      }
+
+
     }
   }
 }
@@ -258,28 +260,28 @@ int rem(double remainder, int whole) {
   String rema = String(remainder);
   int lengthrema = rema.length();
   String resultstring = "";
-  
 
-  
+
+
   for (int i = 0; i < lengthrema; i++) {
-  while (i < wholelen){
-    i++;
-  }
+    while (i < wholelen) {
+      i++;
+    }
     if (rema[i] == "." || isDigit(rema[i])) {
-      
+
       if (isDigit(rema[i])) {
         while (isDigit(rema[i]) || i < lengthrema) {
           resultstring += rema[i];
           i++;
         }
-        
+
         result = resultstring.toInt();
       }
     }
   }
 
-   //result = 2; //For degbugging
-  
+  //result = 2; //For degbugging
+
   return result;
 }
 
