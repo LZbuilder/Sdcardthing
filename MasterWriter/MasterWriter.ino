@@ -130,9 +130,10 @@ void gcodereader() {
     Serial.println(rev);
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
-      if (rev) {
 
-
+      while (!rev){
+        delay(1);
+      }
         
         //delay(delaytime);
         gval = "";
@@ -247,11 +248,8 @@ void gcodereader() {
               }
             }
         }
-        //rev = false;
-      }
-      else {
-        
-      }
+        rev = false;
+      
     }
   }
 }
