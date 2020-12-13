@@ -176,11 +176,8 @@ void gcodereader() {
                 xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
                 Serial.println(xremainder);
                 //Serial.println(x);
-                Wire.beginTransmission(5); // transmit to device #4
-                
+                Wire.beginTransmission(4); // transmit to device #4
                 Wire.write(xwholenumber); // sends one byte
-                Wire.endTransmission();
-                Wire.beginTransmission(5);
                 Wire.write(xremainder);  // sends one byte
                 Wire.endTransmission();    // ends the transmission
 
