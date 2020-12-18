@@ -26,7 +26,7 @@ void receiveEvent() {
     lukaval = 2;
     Wire.beginTransmission(4); // transmit to device #4
 
-    Wire.write(1);  // sends one byte
+    Wire.write(byte(1));  // sends one byte
     Wire.endTransmission();    // ends the transmission
   }
   if (lukaval == 2) {
@@ -37,7 +37,7 @@ void receiveEvent() {
     lukaval = 3;
     Wire.beginTransmission(4); // transmit to device #4
 
-    Wire.write(1);  // sends one byte
+    Wire.write(byte(1));  // sends one byte
     Wire.endTransmission();
   }
   if (lukaval == 3) {
@@ -48,7 +48,7 @@ void receiveEvent() {
     lukaval = 1;
     Wire.beginTransmission(4); // transmit to device #4
 
-    Wire.write(1);  // sends one byte
+    Wire.write(byte(1));  // sends one byte
     Wire.endTransmission();
   }
 

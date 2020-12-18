@@ -171,14 +171,15 @@ void gcodereader() {
                 }
                 //Serial.println(xval);
                 x = xval.toDouble();
+                Serial.println(x);
                 xwholenumber = int(x); // or you can just send it over a byte
-                Serial.println(xwholenumber);
+                //Serial.println(xwholenumber);
                 xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
-                Serial.println(xremainder);
+                //Serial.println(xremainder);
                 //Serial.println(x);
                 Wire.beginTransmission(4); // transmit to device #4
-                Wire.write(xwholenumber); // sends one byte
-                Wire.write(xremainder);  // sends one byte
+                Wire.write(byte(xwholenumber)); // sends one byte
+                Wire.write(byte(xremainder));  // sends one byte
                 Wire.endTransmission();    // ends the transmission
 
                 singleletterint = myFile.read(); //gets a byte
@@ -197,12 +198,12 @@ void gcodereader() {
                     y = yval.toDouble();
                     ywholenumber = int(y); // or you can just send it over a byte
                     yremainder = rem(y, ywholenumber); // I made a function to find what is after the decimal point!
-                    //Serial.println(y);
-                    //Wire.beginTransmission(4); // transmit to device #4
-                    //Wire.write(ywholenumber);              // sends one byte
+                    Serial.println(y);
+                    Wire.beginTransmission(4); // transmit to device #4
+                    Wire.write(ywholenumber);              // sends one byte
 
-                    //Wire.write(yremainder);
-                    //Wire.endTransmission();
+                    Wire.write(yremainder);
+                    Wire.endTransmission();
                     rev = false;
                     if (singleletterchar == 'Z') {
                       singleletterint = myFile.read(); //gets a byte
@@ -217,12 +218,12 @@ void gcodereader() {
                         z = zval.toDouble();
                         zwholenumber = int(z); // or you can just send it over a byte
                         zremainder = rem(z, zwholenumber); // I made a function to find what is after the decimal point!
-                        //Serial.println(z);
-                        // Wire.beginTransmission(4); // transmit to device #4
-                        //Wire.write(zwholenumber);              // sends one byte
+                        Serial.println(z);
+                        Wire.beginTransmission(4); // transmit to device #4
+                        Wire.write(byte(zwholenumber));              // sends one byte
 
-                        //Wire.write(zremainder);
-                        //Wire.endTransmission();    //
+                        Wire.write(byte(zremainder));
+                        Wire.endTransmission();    //
                         //Wait to recieve something
 
 
