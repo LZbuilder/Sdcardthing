@@ -8,7 +8,8 @@
    Instructions for lcd?
     (RS, E, D4, D5, D6, D7)
     (8, 9, 4, 5, 6, 7)
-
+   Test and see if the LCD works!! with your own code!
+   
    Instructions for Rotary Encoder!!
     We need three digital pins for this
 
@@ -83,8 +84,8 @@ void setup() {
   }
 
   Serial.println("initialization done.");
-  //Wire.begin(4);                // join i2c bus with address #4
-  //Wire.onReceive(receiveEvent); // register event
+  Wire.begin(4);                // join i2c bus with address #4
+  Wire.onReceive(receiveEvent); // register event
   Serial.begin(9600);
 
 
@@ -173,10 +174,10 @@ void gcodereader() {
                 x = xval.toDouble();
                 Serial.println(x);
                 xwholenumber = int(x); // or you can just send it over a byte
-                //Serial.println(xwholenumber);
+                Serial.println(xwholenumber);
                 xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
-                //Serial.println(xremainder);
-                //Serial.println(x);
+                Serial.println(xremainder);
+                
                 Wire.beginTransmission(4); // transmit to device #4
                 Wire.write(byte(xwholenumber)); // sends one byte
                 Wire.write(byte(xremainder));  // sends one byte
@@ -283,7 +284,7 @@ int rem(double remainder, int whole) {
   return result;
 }
 
-void receiveEvent() {
+void receiveEvent(int howmany) {
   rev = true; // this is for when it recieves anything from the slave arduino...
   // it will set rev to true meaning it is ok to send the next piece of gcode!
   lcd.setCursor(0, 1);
