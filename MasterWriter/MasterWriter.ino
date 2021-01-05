@@ -19,6 +19,13 @@
 
 
 #include <Wire.h>
+// Define Slave I2C Address
+#define SLAVE_ADDR 9
+// Define Slave answer size
+#define ANSWERSIZE 5
+
+
+
 #include <LiquidCrystal.h>
 // lcd(RS, E, D4, D5, D6, D7)
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
@@ -59,6 +66,8 @@ String multiple[] = {};
 int i;
 int lengthstr;
 
+
+
 void setup() {
   // put your setup code here, to run once:
 
@@ -84,7 +93,7 @@ void setup() {
   }
 
   Serial.println("initialization done.");
-  Wire.begin(4);                // join i2c bus with address #4
+  Wire.begin();                // join i2c bus with address #4
   Wire.onReceive(receiveEvent); // register event
   Serial.begin(9600);
 
