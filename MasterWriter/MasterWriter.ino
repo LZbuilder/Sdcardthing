@@ -9,7 +9,7 @@
     (RS, E, D4, D5, D6, D7)
     (8, 9, 4, 5, 6, 7)
    Test and see if the LCD works!! with your own code!
-   
+
    Instructions for Rotary Encoder!!
     We need three digital pins for this
 
@@ -20,9 +20,9 @@
 
 #include <Wire.h>
 // Define Slave I2C Address
-#define SLAVE_ADDR 9
+#define SLAVE_ADDR 4
 // Define Slave answer size
-#define ANSWERSIZE 5
+#define ANSWERSIZE 4
 
 
 
@@ -35,18 +35,18 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 const int chipSelect = 10;
 File myFile;
 
-boolean rev = true;
+boolean recieveval = false;
 
 int amountrecived = 0;
 
-const int delaytime = 10;
+const int delaytime = 200;
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
 double g = 0;
 String gval = "";
 String xval = "";
 String yval = "";
-String zval = "";
+
 String gcodefile = "gcode.txt";
 
 
@@ -57,8 +57,6 @@ int xwholenumber;
 int xremainder;
 int ywholenumber;
 int yremainder;
-int zwholenumber;
-int zremainder;
 
 
 char singleletterchar; int singleletterint;
@@ -94,7 +92,7 @@ void setup() {
 
   Serial.println("initialization done.");
   Wire.begin();                // join i2c bus with address #4
-  Wire.onReceive(receiveEvent); // register event
+
   Serial.begin(9600);
 
 
@@ -137,15 +135,13 @@ void gcodereader() {
   if (myFile) {
     Serial.println("gcode.txt:");
 
-    Serial.println(rev);
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
+      
 
-      while (!rev) {
-        delay(1);
-      }
 
       //delay(delaytime);
+      recieveval = false;
       gval = "";
       xval = "";
       yval = "";
@@ -186,11 +182,12 @@ void gcodereader() {
                 Serial.println(xwholenumber);
                 xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
                 Serial.println(xremainder);
-                
+
+
                 Wire.beginTransmission(4); // transmit to device #4
-                Wire.write(byte(xwholenumber)); // sends one byte
-                Wire.write(byte(xremainder));  // sends one byte
-                Wire.endTransmission();    // ends the transmission
+                Wire.write(xwholenumber);
+                Wire.write(xremainder);
+                Wire.endTransmission(4);    // ends the transmission
 
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
@@ -210,38 +207,27 @@ void gcodereader() {
                     yremainder = rem(y, ywholenumber); // I made a function to find what is after the decimal point!
                     Serial.println(y);
                     Wire.beginTransmission(4); // transmit to device #4
-                    Wire.write(ywholenumber);              // sends one byte
-
+                    Wire.write(ywholenumber);
                     Wire.write(yremainder);
-                    Wire.endTransmission();
-                    rev = false;
-                    if (singleletterchar == 'Z') {
-                      singleletterint = myFile.read(); //gets a byte
-                      singleletterchar = char(singleletterint);
-                      if (isDigit(singleletterchar)) {
-                        while (isDigit(singleletterchar) || singleletterchar == '.') {
-                          zval += singleletterchar;
-                          singleletterint = myFile.read(); //gets a byte
-                          singleletterchar = char(singleletterint);
-                        }
-                        //Serial.println(yval);
-                        z = zval.toDouble();
-                        zwholenumber = int(z); // or you can just send it over a byte
-                        zremainder = rem(z, zwholenumber); // I made a function to find what is after the decimal point!
-                        Serial.println(z);
-                        Wire.beginTransmission(4); // transmit to device #4
-                        Wire.write(byte(zwholenumber));              // sends one byte
-
-                        Wire.write(byte(zremainder));
-                        Wire.endTransmission();    //
-                        //Wait to recieve something
-
-
-
-
-                      }
+                    Wire.endTransmission(4);
+                    String response = "";
+                    delay(1);
+                    Wire.requestFrom(SLAVE_ADDR, 1);
+                    delay(1);
+                    while (Wire.available()) {
+                      delay(delaytime);
+                      char b = Wire.read();
+                      response += b;
+                      Serial.println("Response");
+                      Serial.println(b);
+                      amountrecived++;
+                      lcd.setCursor(0,0);
+                      lcd.println(String(amountrecived));
+                      recieveval = true;
                     }
-
+                    
+                   
+                    
 
                   }
                 }
@@ -291,12 +277,4 @@ int rem(double remainder, int whole) {
   //result = 2; //For degbugging
 
   return result;
-}
-
-void receiveEvent(int howmany) {
-  rev = true; // this is for when it recieves anything from the slave arduino...
-  // it will set rev to true meaning it is ok to send the next piece of gcode!
-  lcd.setCursor(0, 1);
-  lcd.print("Recived" + amountrecived);
-  amountrecived++;
 }
