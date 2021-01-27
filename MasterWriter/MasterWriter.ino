@@ -39,7 +39,7 @@ boolean recieveval = false;
 
 int amountrecived = 0;
 
-const int delaytime = 200;
+const int delaytime = 100;
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
 double g = 0;
@@ -53,10 +53,10 @@ String gcodefile = "gcode.txt";
 double x = 0; //end result of what comes after x
 double y = 0; //end result of what comes after y
 double z = 0;
-int xwholenumber;
-int xremainder;
-int ywholenumber;
-int yremainder;
+byte xwholenumber;
+byte xremainder;
+byte ywholenumber;
+byte yremainder;
 
 
 char singleletterchar; int singleletterint;
@@ -92,7 +92,7 @@ void setup() {
 
   Serial.println("initialization done.");
   Wire.begin();                // join i2c bus with address #4
-
+  Wire.onReceive(receiveEvent);
   Serial.begin(9600);
 
 
@@ -137,7 +137,7 @@ void gcodereader() {
 
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
-      
+
 
 
       //delay(delaytime);
@@ -183,12 +183,13 @@ void gcodereader() {
                 xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
                 Serial.println(xremainder);
 
-
                 Wire.beginTransmission(4); // transmit to device #4
+                delay(10);
                 Wire.write(xwholenumber);
+                delay(10);
                 Wire.write(xremainder);
-                Wire.endTransmission(4);    // ends the transmission
-
+                Wire.endTransmission();    // ends the transmission
+                delay(10);
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
 
@@ -206,28 +207,32 @@ void gcodereader() {
                     ywholenumber = int(y); // or you can just send it over a byte
                     yremainder = rem(y, ywholenumber); // I made a function to find what is after the decimal point!
                     Serial.println(y);
+                    delay(10);
                     Wire.beginTransmission(4); // transmit to device #4
+                    delay(10);
                     Wire.write(ywholenumber);
+                    delay(10);
                     Wire.write(yremainder);
-                    Wire.endTransmission(4);
+                    delay(10);
+                    Wire.endTransmission();
+
                     String response = "";
                     delay(1);
                     Wire.requestFrom(SLAVE_ADDR, 1);
                     delay(1);
                     while (Wire.available()) {
-                      delay(delaytime);
                       char b = Wire.read();
                       response += b;
                       Serial.println("Response");
                       Serial.println(b);
                       amountrecived++;
-                      lcd.setCursor(0,0);
+                      lcd.setCursor(0, 0);
                       lcd.println(String(amountrecived));
                       recieveval = true;
                     }
-                    
-                   
-                    
+                    delay(1000);
+
+
 
                   }
                 }
@@ -277,4 +282,10 @@ int rem(double remainder, int whole) {
   //result = 2; //For degbugging
 
   return result;
+}
+
+void receiveEvent() {
+
+
+
 }
