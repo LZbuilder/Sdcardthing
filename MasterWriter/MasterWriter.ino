@@ -190,6 +190,27 @@ void gcodereader() {
                 Wire.write(xremainder);
                 Wire.endTransmission();    // ends the transmission
                 delay(10);
+                String response = "";
+                delay(1);
+                while (recieveval == false) {
+                  Wire.requestFrom(SLAVE_ADDR, 1);
+                  delay(10);
+                  while (Wire.available()) {
+                    char b = Wire.read();
+                    response += b;
+                    Serial.println("Response");
+                    Serial.println(b);
+                    
+                    lcd.setCursor(0, 0);
+                    lcd.println(String(amountrecived));
+                    if (response == "A") {
+                      recieveval = true;
+                      amountrecived++;
+                    }
+
+                  }
+                }
+                recieveval = false;
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
 
@@ -218,19 +239,25 @@ void gcodereader() {
 
                     String response = "";
                     delay(1);
-                    Wire.requestFrom(SLAVE_ADDR, 1);
-                    delay(1);
-                    while (Wire.available()) {
-                      char b = Wire.read();
-                      response += b;
-                      Serial.println("Response");
-                      Serial.println(b);
-                      amountrecived++;
-                      lcd.setCursor(0, 0);
-                      lcd.println(String(amountrecived));
-                      recieveval = true;
+                    while (recieveval == false) {
+                      Wire.requestFrom(SLAVE_ADDR, 1);
+                      delay(10);
+                      while (Wire.available()) {
+                        char b = Wire.read();
+                        response += b;
+                        Serial.println("Response");
+                        Serial.println(b);
+                        
+                        lcd.setCursor(0, 0);
+                        lcd.println(String(amountrecived));
+                        if (response == "A") {
+                          recieveval = true;
+                          amountrecived++;
+                        }
+
+                      }
                     }
-                    delay(1000);
+                    
 
 
 

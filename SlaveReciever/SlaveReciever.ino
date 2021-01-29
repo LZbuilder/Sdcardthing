@@ -3,6 +3,7 @@
 #define ANSWERSIZE 4
 
 int lukaval = 1;
+boolean doingcode = true;
 double xval = 0;
 double yval = 0;
 double zval = 0;
@@ -13,9 +14,13 @@ void setup() {
   Wire.begin(SLAVE_ADDR);                // join i2c bus with address #4
   Wire.onRequest(requestEvent);
   Wire.onReceive(receiveEvent); // register event
-
-  digitalWrite(9, HIGH);    // turn the LED off by making the voltage LOW
+  pinMode(9, OUTPUT);
+  pinMode(8, OUTPUT);
   delay(500);
+  digitalWrite(9, HIGH);    // turn the LED off by making the voltage LOW
+  digitalWrite(8, HIGH);
+  delay(500);
+  digitalWrite(8, LOW);
   digitalWrite(9, LOW);
 }
 
@@ -24,45 +29,43 @@ void loop() {
 
 }
 void receiveEvent(int howmany) {
+  doingcode = true;
   while (Wire.available()) {
     if (lukaval == 1) {
       String lukastring = String(Wire.read());
       lukastring += ".";
-      lukastring += Wire.read();
+      lukastring += String(Wire.read());
       xval = lukastring.toDouble();
       lukaval = 2;
-      digitalWrite(9, HIGH);   // turn the LED on (HIGH is the voltage level)
-      delay(500);                       // wait for a second
+      digitalWrite(8, HIGH);   // turn the LED on (HIGH is the voltage level)
 
     }
     else {
       String lukastring = String(Wire.read());
       lukastring += ".";
-      lukastring += Wire.read();
+      lukastring += String(Wire.read());
       yval = lukastring.toDouble();
       lukaval = 1;
       digitalWrite(9, HIGH);
-      delay(500);
     }
-    
+
+    digitalWrite(8, LOW);
     digitalWrite(9, LOW);
   }
-
-
-
-
-
-
-
-
+  delay(2000); //testing 2 second delay
+  doingcode = false;
 }
 
 void requestEvent(int howmany) {
   //Alexanders code below...
   numberofrequest++;
+  if (doingcode == false) {
+    Wire.write("A");
+  }
+  else {
+    Wire.write("L");
+  }
 
 
-
-  Wire.write("L");
 
 }
