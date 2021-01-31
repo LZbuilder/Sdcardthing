@@ -3,7 +3,7 @@
 #define ANSWERSIZE 4
 
 int lukaval = 1;
-boolean doingcode = true;
+boolean doingcode = false;
 double xval = 0;
 double yval = 0;
 double zval = 0;
@@ -29,7 +29,6 @@ void loop() {
 
 }
 void receiveEvent(int howmany) {
-  doingcode = true;
   while (Wire.available()) {
     if (lukaval == 1) {
       String lukastring = String(Wire.read());
@@ -52,18 +51,13 @@ void receiveEvent(int howmany) {
     digitalWrite(8, LOW);
     digitalWrite(9, LOW);
   }
-  delay(2000); //testing 2 second delay
-  doingcode = false;
 }
 
 void requestEvent(int howmany) {
   //Alexanders code below...
-  numberofrequest++;
+  delay(2000);  //testing 2 second delay
   if (doingcode == false) {
     Wire.write("A");
-  }
-  else {
-    Wire.write("L");
   }
 
 

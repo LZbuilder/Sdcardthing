@@ -39,7 +39,7 @@ boolean recieveval = false;
 
 int amountrecived = 0;
 
-const int delaytime = 100;
+const int delaytime = 500;
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
 double g = 0;
@@ -192,22 +192,23 @@ void gcodereader() {
                 delay(10);
                 String response = "";
                 delay(1);
+                Wire.requestFrom(SLAVE_ADDR, 1);
                 while (recieveval == false) {
-                  Wire.requestFrom(SLAVE_ADDR, 1);
-                  delay(10);
+                  
+
+
                   while (Wire.available()) {
                     char b = Wire.read();
                     response += b;
                     Serial.println("Response");
                     Serial.println(b);
-                    
+
                     lcd.setCursor(0, 0);
                     lcd.println(String(amountrecived));
                     if (response == "A") {
                       recieveval = true;
                       amountrecived++;
                     }
-
                   }
                 }
                 recieveval = false;
@@ -242,12 +243,15 @@ void gcodereader() {
                     while (recieveval == false) {
                       Wire.requestFrom(SLAVE_ADDR, 1);
                       delay(10);
+                      while (!Wire.available()) {
+                        ;
+                      }
                       while (Wire.available()) {
                         char b = Wire.read();
                         response += b;
                         Serial.println("Response");
                         Serial.println(b);
-                        
+
                         lcd.setCursor(0, 0);
                         lcd.println(String(amountrecived));
                         if (response == "A") {
@@ -257,7 +261,7 @@ void gcodereader() {
 
                       }
                     }
-                    
+
 
 
 
@@ -312,7 +316,6 @@ int rem(double remainder, int whole) {
 }
 
 void receiveEvent() {
-
 
 
 }
