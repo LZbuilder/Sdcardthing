@@ -37,19 +37,9 @@ double servoCurrentpos = 0;
 Stepper Stepper1(stepsPerRevolution, 7, 5, 6, 8);
 
 void setup() {
-  Wire.begin(SLAVE_ADDR);                // join i2c bus with address #4
-  Wire.onRequest(requestEvent);
+  Wire.begin(4);                // join i2c bus with address #4
   Wire.onReceive(receiveEvent); // register event
-  pinMode(9, OUTPUT);
-  pinMode(8, OUTPUT);
-  delay(500);
-  digitalWrite(9, HIGH);    // turn the LED off by making the voltage LOW
-  digitalWrite(8, HIGH);
-  delay(500);
-  digitalWrite(8, LOW);
-  digitalWrite(9, LOW);
-
-
+ 
   /* Alexanders setup code */
 
   Stepper1.setSpeed(5); //rpms
@@ -75,7 +65,6 @@ void receiveEvent(int howmany) {
       lukastring += String(Wire.read());
       xval = lukastring.toDouble();
       lukaval = 2;
-      digitalWrite(8, HIGH);   // turn the LED on (HIGH is the voltage level)
 
     }
     else {
@@ -84,15 +73,11 @@ void receiveEvent(int howmany) {
       lukastring += String(Wire.read());
       yval = lukastring.toDouble();
       lukaval = 1;
-      digitalWrite(9, HIGH);
     }
 
-    digitalWrite(8, LOW);
-    digitalWrite(9, LOW);
   }
   //Alexanders Code
-  xValue = xval;
-  yValue = yval;
+
   double stepperNewdeg = ((atan(xValue / yValue) * 180 / 3.14159265) + 0); // caclulate how much the stepper neews t move
   double servoNewdeg = (atan(Bedheight / yValue) * 180 / 3.14159265); // caclulate how much the servo needs to move
   stepperCalculateddeg = stepperNewdeg - stepperPreviousdeg; // how far the stepper needs to move in degrees
@@ -115,4 +100,6 @@ void receiveEvent(int howmany) {
   //  servoy.write(yD);
   stepperPreviousdeg = stepperNewdeg; // sets the steppers previous degre to the last degre used
   servoPreviousdeg = servoNewdeg; // does the same but for the servo
+  xValue = xval;
+  yValue = yval;
 }
