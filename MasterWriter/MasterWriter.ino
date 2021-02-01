@@ -39,7 +39,7 @@ boolean recieveval = false;
 
 int amountrecived = 0;
 
-const int delaytime = 500; // important 
+const int delaytime = 500; // important
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
 double g = 0;
@@ -190,8 +190,9 @@ void gcodereader() {
                 Wire.write(xremainder);
                 Wire.endTransmission();    // ends the transmission
                 delay(delaytime);
-
-                recieveval = false;
+                
+                
+                
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
 
@@ -270,9 +271,4 @@ int rem(double remainder, int whole) {
   //result = 2; //For degbugging
 
   return result;
-}
-
-void receiveEvent() {
-
-
 }
