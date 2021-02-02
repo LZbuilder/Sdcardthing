@@ -19,10 +19,7 @@
 
 
 #include <Wire.h>
-// Define Slave I2C Address
-#define SLAVE_ADDR 4
-// Define Slave answer size
-#define ANSWERSIZE 4
+
 
 
 
@@ -39,7 +36,7 @@ boolean recieveval = false;
 
 int amountrecived = 0;
 
-const int delaytime = 500; // important
+const int delaytime = 2000; // important
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
 double g = 0;
@@ -70,11 +67,12 @@ void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(9600);
-  while (!Serial) {
+  /*while (!Serial) {
     ; //Wait for serial monitor to be opened
   }
-
-
+  */
+  delay(delaytime);
+  
   Serial.println("Initializing SD card...");
 
   if (!SD.begin(chipSelect)) {
@@ -91,8 +89,7 @@ void setup() {
   }
 
   Serial.println("initialization done.");
-  Wire.begin();                // join i2c bus with address #4
-  Wire.onReceive(receiveEvent);
+  Wire.begin();                // join i2c bus with address Master
   Serial.begin(9600);
 
 

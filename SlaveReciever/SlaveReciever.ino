@@ -39,9 +39,10 @@ Stepper Stepper1(stepsPerRevolution, 7, 5, 6, 8);
 void setup() {
   Wire.begin(4);                // join i2c bus with address #4
   Wire.onReceive(receiveEvent); // register event
- 
+  Serial.begin(9600);
   /* Alexanders setup code */
-
+  delay(100);
+  Serial.println("Slave Ready To Print!!!");
   Stepper1.setSpeed(5); //rpms
   servoy.attach(9);
 
@@ -58,9 +59,11 @@ void loop() {
 
 }
 void receiveEvent(int howmany) {
+  Serial.println("Recieved");
   while (Wire.available()) {
     if (lukaval == 1) {
-      String lukastring = String(Wire.read());
+      String lukastring = "";
+      lukastring = String(Wire.read());
       lukastring += ".";
       lukastring += String(Wire.read());
       xval = lukastring.toDouble();
@@ -68,7 +71,8 @@ void receiveEvent(int howmany) {
 
     }
     else {
-      String lukastring = String(Wire.read());
+      String lukastring = "";
+      lukastring = String(Wire.read());
       lukastring += ".";
       lukastring += String(Wire.read());
       yval = lukastring.toDouble();
@@ -77,7 +81,8 @@ void receiveEvent(int howmany) {
 
   }
   //Alexanders Code
-
+  xValue = xval;
+  yValue = yval;
   double stepperNewdeg = ((atan(xValue / yValue) * 180 / 3.14159265) + 0); // caclulate how much the stepper neews t move
   double servoNewdeg = (atan(Bedheight / yValue) * 180 / 3.14159265); // caclulate how much the servo needs to move
   stepperCalculateddeg = stepperNewdeg - stepperPreviousdeg; // how far the stepper needs to move in degrees
@@ -100,6 +105,5 @@ void receiveEvent(int howmany) {
   //  servoy.write(yD);
   stepperPreviousdeg = stepperNewdeg; // sets the steppers previous degre to the last degre used
   servoPreviousdeg = servoNewdeg; // does the same but for the servo
-  xValue = xval;
-  yValue = yval;
+  
 }
