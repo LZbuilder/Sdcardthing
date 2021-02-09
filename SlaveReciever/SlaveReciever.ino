@@ -54,8 +54,6 @@ void setup() {
 
 
 }
-//Stepper1.step((i/5.661111)*96);     set i to the value that you want the stepper to rotate when it is in the assambly, when using just the stepper devide i by three
-
 
 void loop() {
 
@@ -75,7 +73,7 @@ void receiveEvent(int howmany) {
     xval = x.toDouble();
     lukaval = 3;
     String x = "";
-   
+    Serial.println("X");
     Serial.println(xval);
 
   }
@@ -91,7 +89,7 @@ void receiveEvent(int howmany) {
     yval = y.toDouble();
     lukaval = 1;
     String y = "";
-    
+    Serial.println("Y");
     Serial.println(yval);
   }
 

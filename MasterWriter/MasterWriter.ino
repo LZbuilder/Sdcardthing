@@ -30,7 +30,7 @@ boolean recieveval = false;
 
 int amountrecived = 0;
 
-const int delaytime = 2000; // important
+const int delaytime = 4000; // important
 //work in progres
 String strstuff = "G23 X42 Y54.245   Z4; E31; ";
 double g = 0;
@@ -173,7 +173,7 @@ void gcodereader() {
                 Wire.write(byte(xwholenumber));
                 delay(1);
                 Wire.endTransmission();
-                delay(delaytime);
+                delay(50);
                 Wire.beginTransmission(4);
                 Wire.write(byte(xremainder));
                 Wire.endTransmission();    // ends the transmission
@@ -204,7 +204,7 @@ void gcodereader() {
                     Wire.write(byte(ywholenumber));
                     delay(1);
                     Wire.endTransmission();
-                    delay(delaytime);
+                    delay(50);
                     Wire.beginTransmission(4);
                     Wire.write(byte(yremainder));
                     delay(1);
