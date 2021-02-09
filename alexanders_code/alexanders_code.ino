@@ -57,7 +57,7 @@ void loop() {
   //the stepper rotates counterclockwise and the degree of the servo increses         stepperCalculateddeg<0 & servoCalculateddeg<servoPreviousdeg
   //the stepper rotates counterclockwise and the degree of the servo decreses
 
-  if (stepperCalculateddeg > 0 && servoCalculateddeg > servoPreviousdeg); { // the calculated value for the stepper is more than 0 go forwards,the calculated value for the stepper is more than the last value make the angle more
+  if (stepperCalculateddeg > 0 && servoCalculateddeg > servoPreviousdeg) { // the calculated value for the stepper is more than 0 go forwards,the calculated value for the stepper is more than the last value make the angle more
     Serial.println("stepper moving counter clock wise");
     Serial.println("degree of the servo should eb getting higher");
     // speed = distance/time

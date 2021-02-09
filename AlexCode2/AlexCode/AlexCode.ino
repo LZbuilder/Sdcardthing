@@ -60,19 +60,19 @@ void loop() {
   //the stepper rotates counterclockwise and the servo rotates counterclockwise       stepperCalculateddeg<0 & servoCalculateddeg<servoPreviousdeg
   //the stepper rotates counterclockwise and the servo rotates clockwise              stepperCalculateddeg<0 & servoCalculateddeg>servoPreviousdeg
 
-  if (stepperCalculateddeg > 0 && servoCalculateddeg > servoPreviousdeg); { // the calculated value for the stepper is more than 0 go forwards,the calculated value for the stepper is more than the last value make the angle more
+  if (stepperCalculateddeg > 0 && servoCalculateddeg > servoPreviousdeg) { // the calculated value for the stepper is more than 0 go forwards,the calculated value for the stepper is more than the last value make the angle more
     Serial.println("stepper moving clock wise");
     Serial.println("servo moving clockwise");
 
 // this is the part i need you to do for me
-    steppersteps = (stepperCalculateddeg/repeatamount); // not a problem
-    servosteps = (servoCalculatedgeg/repeatamount); //all good
-    for(int i = 0; i < repeatamount; i++){
+    steppersteps = stepperCalculateddeg/repeatamount; // not a problem
+    servosteps = servoCalculateddeg/repeatamount; //all good
+    for (int i = 0; i < repeatamount; i++){
       // i dont want to learn how to use one of these 
     
     
     Stepper1.step((steppersteps/5.661111)*96);
-    servoy.write()//i dont know how to make this work but its sopposed to be servo steps times i
+    servoy.write(servosteps * i);//i dont know how to make this work but its sopposed to be servo steps times i
 
       
     
