@@ -44,7 +44,7 @@ String gcodefile = "gcode.txt";
 double x = 0; //end result of what comes after x
 double y = 0; //end result of what comes after y
 double z = 0;
-byte xwholenumber;
+byte xwholenumber = 0;
 byte xremainder;
 byte ywholenumber;
 byte yremainder;
