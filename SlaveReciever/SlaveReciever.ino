@@ -75,6 +75,7 @@ void receiveEvent(int howmany) {
     String x = "";
     Serial.println("X");
     Serial.println(xval);
+    
 
   }
   else if (lukaval == 3)

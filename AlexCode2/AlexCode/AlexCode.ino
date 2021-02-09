@@ -64,13 +64,15 @@ void loop() {
     Serial.println("stepper moving clock wise");
     Serial.println("servo moving clockwise");
 
-// this is the part i need you to do for me :)
+// this is the part i need you to do for me
     steppersteps = (stepperCalculateddeg/repeatamount); // not a problem
     servosteps = (servoCalculatedgeg/repeatamount); //all good
-    for( i < repeatamount i++) // i dont want to learn how to use one of these 
+    for(int i = 0; i < repeatamount; i++){
+      // i dont want to learn how to use one of these 
+    
     
     Stepper1.step((steppersteps/5.661111)*96);
-    servoy.write(//i dont know how to make this work but its sopposed to be servo steps times i)
+    servoy.write()//i dont know how to make this work but its sopposed to be servo steps times i
 
       
     
@@ -78,8 +80,8 @@ void loop() {
     // speed = distance/time
 
 
-//end the loop and set i to zero. What its sopposed to do is repeat that loop repeatamount times 
-  
+    //end the loop and set i to zero. What its sopposed to do is repeat that loop repeatamount times 
+    }
   }
   xValue = random(0, 200);
   yValue = random(0, 200);
