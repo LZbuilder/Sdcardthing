@@ -20,12 +20,6 @@
 
 #include <Wire.h>
 
-
-
-
-#include <LiquidCrystal.h>
-// lcd(RS, E, D4, D5, D6, D7)
-LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 #include <SPI.h>
 #include <SD.h>
 
@@ -68,11 +62,11 @@ void setup() {
 
   Serial.begin(9600);
   /*while (!Serial) {
-    ; //Wait for serial monitor to be opened
-  }
+    ; //Wait for serial monitor  to be opened
+    }
   */
-  delay(delaytime);
-  
+
+
   Serial.println("Initializing SD card...");
 
   if (!SD.begin(chipSelect)) {
@@ -97,7 +91,7 @@ void setup() {
 
 
 
-  lcdsetup(); //Setup the LCD for Debugging
+  
   //open file for reading
 
   //use file
@@ -111,12 +105,6 @@ void loop() {
 
 }
 
-void lcdsetup() {
-
-  int numRows = 2;
-  int numCols = 16;
-  lcd.begin(numRows, numCols);
-}
 
 void gcodefinder() {
 
@@ -179,17 +167,20 @@ void gcodereader() {
                 Serial.println(xwholenumber);
                 xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
                 Serial.println(xremainder);
-
+                delay(1);
                 Wire.beginTransmission(4); // transmit to device #4
-                delay(10);
-                Wire.write(xwholenumber);
-                delay(10);
-                Wire.write(xremainder);
+                delay(1);
+                Wire.write(byte(xwholenumber));
+                delay(1);
+                Wire.endTransmission();
+                delay(delaytime);
+                Wire.beginTransmission(4);
+                Wire.write(byte(xremainder));
                 Wire.endTransmission();    // ends the transmission
                 delay(delaytime);
-                
-                
-                
+
+
+
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
 
@@ -207,13 +198,16 @@ void gcodereader() {
                     ywholenumber = int(y); // or you can just send it over a byte
                     yremainder = rem(y, ywholenumber); // I made a function to find what is after the decimal point!
                     Serial.println(y);
-                    delay(10);
+                    delay(1);
                     Wire.beginTransmission(4); // transmit to device #4
-                    delay(10);
-                    Wire.write(ywholenumber);
-                    delay(10);
-                    Wire.write(yremainder);
-                    delay(10);
+                    delay(1);
+                    Wire.write(byte(ywholenumber));
+                    delay(1);
+                    Wire.endTransmission();
+                    delay(delaytime);
+                    Wire.beginTransmission(4);
+                    Wire.write(byte(yremainder));
+                    delay(1);
                     Wire.endTransmission();
                     delay(delaytime);
 
