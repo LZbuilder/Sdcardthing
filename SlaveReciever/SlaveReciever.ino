@@ -97,7 +97,7 @@ void receiveEvent(int howmany) {
     double servoNewdeg = (atan(Bedheight / yValue) * 180 / 3.14159265); // caclulate how much the servo needs to move
     stepperCalculateddeg = stepperNewdeg - stepperPreviousdeg; // how far the stepper needs to move in degrees
     servoCalculateddeg = servoNewdeg - servoPreviousdeg;
-    Serial.println(stepperNewdeg - stepperPreviousdeg);
+    Serial.println(servoNewdeg);
 
     // their are four possibilitys,
     //the stepper rotates clockwise and the servo rotates counterclockwise              stepperCalculateddeg>0 & servoCalculateddeg<servoPreviousdeg
@@ -112,7 +112,7 @@ void receiveEvent(int howmany) {
       // do the formula so the stepper arrives to stepperCalculateddeg the same time the servo arrives to servoCalculateddeg
 
     }
-    servoy.write(xval);
+    servoy.write(servoNewdeg);
 
     stepperPreviousdeg = stepperNewdeg; // sets the steppers previous degre to the last degre used
     servoPreviousdeg = servoNewdeg; // does the same but for the servo
