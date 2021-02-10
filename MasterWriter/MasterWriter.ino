@@ -1,3 +1,5 @@
+
+
 /* Instuctions for SD Card:
     1. Connect - ground and 3.3v or 5v
     2. CS - pin 10
@@ -19,7 +21,7 @@
 
 
 #include <Wire.h>
-
+#include <LiquidCrystal.h>
 #include <SPI.h>
 #include <SD.h>
 
