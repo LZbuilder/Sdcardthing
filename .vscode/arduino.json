@@ -1,4 +1,4 @@
 {
     "board": "arduino:avr:uno",
-    "sketch": "sdcardthingy\\sdcardthingy.ino"
+    "sketch": "MasterWriter\\MasterWriter.ino"
 }

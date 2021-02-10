@@ -178,8 +178,6 @@ void gcodereader() {
                 Wire.endTransmission();    // ends the transmission
                 delay(delaytime);
 
-
-
                 singleletterint = myFile.read(); //gets a byte
                 singleletterchar = char(singleletterint);
 
