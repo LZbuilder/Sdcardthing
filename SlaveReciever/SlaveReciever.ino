@@ -113,7 +113,7 @@ void receiveEvent(int howmany) {
 
     }
     servoy.write(servoNewdeg);
-
+      
     stepperPreviousdeg = stepperNewdeg; // sets the steppers previous degre to the last degre used
     servoPreviousdeg = servoNewdeg; // does the same but for the servo
 

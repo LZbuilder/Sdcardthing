@@ -60,7 +60,7 @@ void loop() {
   //the stepper rotates counterclockwise and the servo rotates counterclockwise       stepperCalculateddeg<0 & servoCalculateddeg<servoPreviousdeg
   //the stepper rotates counterclockwise and the servo rotates clockwise              stepperCalculateddeg<0 & servoCalculateddeg>servoPreviousdeg
 
-  if (stepperCalculateddeg > 0 && servoCalculateddeg > servoPreviousdeg) { // the calculated value for the stepper is more than 0 go forwards,the calculated value for the stepper is more than the last value make the angle more
+  if (stepperCalculateddeg > 0 && servoCalculateddeg > servoPreviousdeg) { // if the calculated value for the stepper is more than 0 go forwards,and if the calculated value for the stepper is more than the last value make the angle more
     Serial.println("stepper moving clock wise");
     Serial.println("servo moving clockwise");
 
