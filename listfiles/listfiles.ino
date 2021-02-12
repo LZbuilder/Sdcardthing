@@ -1,4 +1,4 @@
-/*
+ /*
   Listfiles
 
   This example shows how print out the files in a
@@ -53,6 +53,7 @@ void loop() {
 }
 
 void printDirectory(File dir) {
+  int i = 0;
   while (true) {
 
     File entry =  dir.openNextFile();
@@ -61,10 +62,11 @@ void printDirectory(File dir) {
       break;
     }
     
-    if(entry.name() != "SYSTEM~1"){
+  if (i != 0){
       Serial.println(entry.name());
-    }
+  }
     
     entry.close();
+    i++;
   }
 }
