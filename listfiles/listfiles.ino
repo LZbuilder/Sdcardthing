@@ -45,7 +45,6 @@ void setup() {
 
   printDirectory(root);
 
-  Serial.println("done!");
 }
 
 void loop() {

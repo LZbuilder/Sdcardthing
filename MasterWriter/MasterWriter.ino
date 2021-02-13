@@ -24,6 +24,8 @@
 #include <LiquidCrystal.h>
 #include <SPI.h>
 #include <SD.h>
+const int rs = 8, en = 9, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 const int chipSelect = 10;
 File myFile;
@@ -86,15 +88,15 @@ void setup() {
   Serial.println("initialization done.");
   Wire.begin();                // join i2c bus with address Master
   Serial.begin(9600);
+  lcd.begin(16, 2);
 
 
 
 
-
-
-  
+  //
+  guisetup();
   //open file for reading
-
+  gcodefinder();
   //use file
   gcodereader();
 
@@ -106,9 +108,40 @@ void loop() {
 
 }
 
+void guisetup() {
+  lcd.setCursor(0, 1);
+  lcd.println("Print");
+  lcd.setCursor(0,16); // Sets to the last collum on the first row.
+  lcd.print("^"); // the up arrow
+}
 
 void gcodefinder() {
+  // Use LCD and ROTARY Encoder to find a gcode file
+  root = SD.open("/");
+  printDirectory(root);
 
+
+  
+}
+
+void printDirectory(File dir) {
+  int i = 0;
+  String files[];
+  while (true) {
+
+    File entry =  dir.openNextFile();
+    if (! entry) {
+      // no more files
+      break;
+    }
+    
+  if (i != 0){
+      files[i - 1] = entry.name;
+  }
+    
+    entry.close();
+    i++;
+  }
 }
 
 void gcodereader() {
