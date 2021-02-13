@@ -17,8 +17,9 @@
 
 */
 
-
-
+#define swre A0
+#define outputA 2
+#define outputB 3
 
 #include <Wire.h>
 #include <LiquidCrystal.h>
@@ -29,6 +30,7 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 const int chipSelect = 10;
 File myFile;
+File root;
 
 boolean recieveval = false;
 
@@ -57,6 +59,16 @@ char singleletterchar; int singleletterint;
 String multiple[] = {};
 int i;
 int lengthstr;
+
+
+
+int counter = 0;
+int aState;
+int aLastState;
+
+
+
+
 
 
 
@@ -89,7 +101,10 @@ void setup() {
   Wire.begin();                // join i2c bus with address Master
   Serial.begin(9600);
   lcd.begin(16, 2);
-
+  pinMode (outputA, INPUT);
+  pinMode (outputB, INPUT);
+  pinMode (swre, INPUT);
+  aLastState = digitalRead(outputA);
 
 
 
@@ -106,13 +121,45 @@ void setup() {
 void loop() {
 
 
+
 }
 
 void guisetup() {
+  int selected = 0;
+  
   lcd.setCursor(0, 1);
   lcd.println("Print");
-  lcd.setCursor(0,16); // Sets to the last collum on the first row.
+  lcd.setCursor(0, 16); // Sets to the last collum on the first row.
   lcd.print("^"); // the up arrow
+  lcd.setCursor(1, 1);
+  lcd.println("fucker");
+  lcd.setCursor(1, 16);
+  lcd.print("v"); // the up arrow
+  while (true) {
+    // do the shitty code that constantly checks whether or not the RE was triggered.
+    aState = digitalRead(outputA); // Reads the "current" state of the outputA
+    // If the previous and the current state of the outputA are different, that means a Pulse has occured
+    if (aState != aLastState) {
+      // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
+      if (digitalRead(outputB) != aState) {
+        selected ++;
+        
+      } else {
+        selected --;
+      }
+    }
+    aLastState = aState;
+    
+    //Now that that is done we now know what is selected.
+    // and we can figure out if the sw is switched on.
+    // We will use anolog pin ZERO for SW!
+    if (digitalRead(swre) == HIGH){
+      lcd.setCursor(0,1);
+      lcd.println("HIGH");
+    }
+    
+    
+  }
 }
 
 void gcodefinder() {
@@ -121,12 +168,12 @@ void gcodefinder() {
   printDirectory(root);
 
 
-  
+
 }
 
 void printDirectory(File dir) {
   int i = 0;
-  String files[];
+  String files[1000];
   while (true) {
 
     File entry =  dir.openNextFile();
@@ -134,11 +181,11 @@ void printDirectory(File dir) {
       // no more files
       break;
     }
-    
-  if (i != 0){
-      files[i - 1] = entry.name;
-  }
-    
+
+    if (i != 0) {
+      files[i - 1] = entry.name();
+    }
+
     entry.close();
     i++;
   }
