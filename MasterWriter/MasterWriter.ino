@@ -17,6 +17,40 @@
 
 */
 
+//custom characters for lcd
+    //this is the zeroth character
+byte uparrow[8] = {
+  0b00000,
+  0b00100,
+  0b01010,
+  0b10001,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000
+};
+    // this is the first character
+byte downarrow[8] = {
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b10001,
+  0b01010,
+  0b00100,
+  0b00000
+};
+
+
+
+
+
+
+
+
+
+
+
 #define swre A0
 #define outputA 2
 #define outputB 3
@@ -101,6 +135,11 @@ void setup() {
   Wire.begin();                // join i2c bus with address Master
   Serial.begin(9600);
   lcd.begin(16, 2);
+  lcd.createChar(0, uparrow);
+  lcd.createChar(1, downarrow);
+
+
+  
   pinMode (outputA, INPUT);
   pinMode (outputB, INPUT);
   pinMode (swre, INPUT);
@@ -127,14 +166,14 @@ void loop() {
 void guisetup() {
   int selected = 0;
   
-  lcd.setCursor(0, 1);
+  lcd.setCursor(0, 0);
   lcd.println("Print");
-  lcd.setCursor(0, 16); // Sets to the last collum on the first row.
-  lcd.print("^"); // the up arrow
-  lcd.setCursor(1, 1);
+  lcd.setCursor(15, 0); // Sets to the last collum on the first row.
+  lcd.write(byte(0)); // the up arrow
+  lcd.setCursor(0, 1);
   lcd.println("fucker");
-  lcd.setCursor(1, 16);
-  lcd.print("v"); // the up arrow
+  lcd.setCursor(15, 1);
+  lcd.write(byte(1));// the up arrow
   while (true) {
     // do the shitty code that constantly checks whether or not the RE was triggered.
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
@@ -156,6 +195,7 @@ void guisetup() {
     if (digitalRead(swre) == HIGH){
       lcd.setCursor(0,1);
       lcd.println("HIGH");
+      break;
     }
     
     
