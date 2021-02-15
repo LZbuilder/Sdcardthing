@@ -165,7 +165,7 @@ void loop() {
 
 void guisetup() {
   int selected = 0;
-  
+  lcd.clear();
   lcd.setCursor(0, 0);
   lcd.println("Print");
   lcd.setCursor(15, 0); // Sets to the last collum on the first row.
@@ -193,8 +193,9 @@ void guisetup() {
     // and we can figure out if the sw is switched on.
     // We will use anolog pin ZERO for SW!
     if (digitalRead(swre) == HIGH){
-      lcd.setCursor(0,1);
-      lcd.println("HIGH");
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.println("lol");
       break;
     }
     
