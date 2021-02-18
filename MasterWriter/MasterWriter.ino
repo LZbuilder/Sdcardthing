@@ -18,7 +18,7 @@
 */
 
 //custom characters for lcd
-    //this is the zeroth character
+//this is the zeroth character
 byte uparrow[8] = {
   0b00000,
   0b00100,
@@ -29,7 +29,7 @@ byte uparrow[8] = {
   0b00000,
   0b00000
 };
-    // this is the first character
+// this is the first character
 byte downarrow[8] = {
   0b00000,
   0b00000,
@@ -51,7 +51,7 @@ byte downarrow[8] = {
 
 
 
-#define swre A0
+#define swre A1
 #define outputA 2
 #define outputB 3
 
@@ -117,7 +117,7 @@ void setup() {
 
 
   Serial.println("Initializing SD card...");
-
+  
   if (!SD.begin(chipSelect)) {
     Serial.println("initialization failed. Things to check:");
 
@@ -139,10 +139,10 @@ void setup() {
   lcd.createChar(1, downarrow);
 
 
-  
+
   pinMode (outputA, INPUT);
   pinMode (outputB, INPUT);
-  pinMode (swre, INPUT);
+  pinMode (swre, INPUT_PULLUP);
   aLastState = digitalRead(outputA);
 
 
@@ -150,9 +150,9 @@ void setup() {
   //
   guisetup();
   //open file for reading
-  gcodefinder();
+  //gcodefinder();
   //use file
-  gcodereader();
+  //gcodereader();
 
 
 }
@@ -175,6 +175,7 @@ void guisetup() {
   lcd.setCursor(15, 1);
   lcd.write(byte(1));// the up arrow
   while (true) {
+    int sensorValA1 = digitalRead(A1);
     // do the shitty code that constantly checks whether or not the RE was triggered.
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
     // If the previous and the current state of the outputA are different, that means a Pulse has occured
@@ -182,24 +183,26 @@ void guisetup() {
       // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
       if (digitalRead(outputB) != aState) {
         selected ++;
-        
+
       } else {
         selected --;
       }
     }
     aLastState = aState;
-    
+
     //Now that that is done we now know what is selected.
     // and we can figure out if the sw is switched on.
     // We will use anolog pin ZERO for SW!
-    if (digitalRead(swre) == HIGH){
+    if (sensorValA1 == HIGH) {
+
+    Serial.println("Buttonpressed");
       lcd.clear();
-      lcd.setCursor(0,0);
+      lcd.setCursor(0, 0);
       lcd.println("lol");
-      break;
-    }
-    
-    
+  } else {
+    digitalWrite(13, HIGH);
+  }
+
   }
 }
 
