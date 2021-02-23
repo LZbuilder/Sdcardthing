@@ -188,34 +188,29 @@ void guisetup() {
     if (aState != aLastState) {
       // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
       if (digitalRead(outputB) != aState) {
-        selected ++;
-        if (selected > 1) {
-          selected = 0;
-        }
+        counter = counter + .5;
       } else {
-        selected --;
-        if (selected < 0) {
-          selected = 1;
-        }
+        counter = counter - .5;
       }
       Serial.print("Position: ");
-      Serial.println(selected);
+      Serial.println(counter);
+      aLastState = aState;
     }
-    aLastState = aState;
+    int sensorValA1 = digitalRead(swre);
+    if (sensorValA1 == LOW) {
+
+      Serial.println("Buttonpressed");
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.println("lol");
+      while (sensorValA1 != HIGH) {
+
+      }
+    }
+
+
   }
-  if (sensorValA1 == HIGH) {
-
-    Serial.println("Buttonpressed");
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.println("lol");
-  } else {
-    digitalWrite(13, HIGH);
-  }
-
-
 }
-
 void gcodefinder() {
   // Use LCD and ROTARY Encoder to find a gcode file
   root = SD.open("/");
