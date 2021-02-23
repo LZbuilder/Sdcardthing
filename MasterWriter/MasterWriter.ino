@@ -117,8 +117,8 @@ void setup() {
 
 
   Serial.println("Initializing SD card...");
-  
-  if (!SD.begin(chipSelect)) {
+
+  /*if (!SD.begin(chipSelect)) {
     Serial.println("initialization failed. Things to check:");
 
     Serial.println("1. is a card inserted?");
@@ -129,8 +129,8 @@ void setup() {
 
     Serial.println("Note: press reset or reopen this serial monitor after fixing your issue!");
     while (true);
-  }
-
+    }
+  */
   Serial.println("initialization done.");
   Wire.begin();                // join i2c bus with address Master
   Serial.begin(9600);
@@ -169,7 +169,7 @@ void guisetup() {
   delay(1);
   lcd.setCursor(0, 0);
   delay(1);
-  lcd.println("Print");
+  lcd.println("Print:");
   delay(1);
   lcd.setCursor(15, 0); // Sets to the last collum on the first row.
   delay(1);
@@ -177,41 +177,43 @@ void guisetup() {
   delay(1);
   lcd.setCursor(0, 1);
   delay(1);
-  lcd.println("fucker");
+  lcd.println("Settings:");
   delay(1);
   lcd.setCursor(15, 1);
   delay(1);
   lcd.write(byte(1));// the down arrow
   while (true) {
-    int sensorValA1 = digitalRead(A1);
-    // do the shitty code that constantly checks whether or not the RE was triggered.
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
     // If the previous and the current state of the outputA are different, that means a Pulse has occured
     if (aState != aLastState) {
       // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
       if (digitalRead(outputB) != aState) {
         selected ++;
-
+        if (selected > 1) {
+          selected = 0;
+        }
       } else {
         selected --;
+        if (selected < 0) {
+          selected = 1;
+        }
       }
+      Serial.print("Position: ");
+      Serial.println(selected);
     }
     aLastState = aState;
-
-    //Now that that is done we now know what is selected.
-    // and we can figure out if the sw is switched on.
-    // We will use anolog pin ZERO for SW!
-    /*if (sensorValA1 == HIGH) {
+  }
+  if (sensorValA1 == HIGH) {
 
     Serial.println("Buttonpressed");
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.println("lol");
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.println("lol");
   } else {
     digitalWrite(13, HIGH);
   }
-*/
-  }
+
+
 }
 
 void gcodefinder() {
