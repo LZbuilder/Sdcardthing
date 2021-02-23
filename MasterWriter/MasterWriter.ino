@@ -166,14 +166,22 @@ void loop() {
 void guisetup() {
   int selected = 0;
   lcd.clear();
+  delay(1);
   lcd.setCursor(0, 0);
+  delay(1);
   lcd.println("Print");
+  delay(1);
   lcd.setCursor(15, 0); // Sets to the last collum on the first row.
+  delay(1);
   lcd.write(byte(0)); // the up arrow
+  delay(1);
   lcd.setCursor(0, 1);
+  delay(1);
   lcd.println("fucker");
+  delay(1);
   lcd.setCursor(15, 1);
-  lcd.write(byte(1));// the up arrow
+  delay(1);
+  lcd.write(byte(1));// the down arrow
   while (true) {
     int sensorValA1 = digitalRead(A1);
     // do the shitty code that constantly checks whether or not the RE was triggered.
@@ -193,7 +201,7 @@ void guisetup() {
     //Now that that is done we now know what is selected.
     // and we can figure out if the sw is switched on.
     // We will use anolog pin ZERO for SW!
-    if (sensorValA1 == HIGH) {
+    /*if (sensorValA1 == HIGH) {
 
     Serial.println("Buttonpressed");
       lcd.clear();
@@ -202,7 +210,7 @@ void guisetup() {
   } else {
     digitalWrite(13, HIGH);
   }
-
+*/
   }
 }
 
@@ -215,7 +223,8 @@ void gcodefinder() {
 
 }
 
-void printDirectory(File dir) {
+void
+printDirectory(File dir) {
   int i = 0;
   String files[1000];
   while (true) {
