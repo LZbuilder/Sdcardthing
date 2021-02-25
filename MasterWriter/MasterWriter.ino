@@ -41,13 +41,13 @@ byte downarrow[8] = {
   0b00000
 };
 byte uparrowselected[8] = {
-  0b00000,
-  0b00000,
-  0b00000,
-  0b00000,
-  0b11111,
-  0b01110,
   0b00100,
+  0b01110,
+  0b11111,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
   0b00000
 };
 
@@ -127,18 +127,7 @@ void setup() {
   }
 
 
-  if (!SD.begin(chipSelect)) {
-    Serial.println("initialization failed. Things to check:");
 
-    Serial.println("1. is a card inserted?");
-
-    Serial.println("2. is your wiring correct?");
-
-    Serial.println("3. did you change the chipSelect pin to match your shield or module?");
-
-    Serial.println("Note: press reset or reopen this serial monitor after fixing your issue!");
-    while (true);
-  }
   Serial.println("Initializing SD card...");
 
 
@@ -265,11 +254,10 @@ void printGui() {
 }
 
 void gcodefinder() {
-
   // Use LCD and ROTARY Encoder to find a gcode file
   root = SD.open("/");
   printDirectory(root);
-  
+
 }
 void printDirectory(File dir) { // I need to fix this
   int i = 0;
@@ -284,6 +272,7 @@ void printDirectory(File dir) { // I need to fix this
 
     if (i != 0) {
       files[i - 1] = entry.name();
+      Serial.println(files[0]);
     }
 
     entry.close();
