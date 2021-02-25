@@ -63,15 +63,6 @@ byte downarrowselected[8] = {
 };
 
 
-
-
-
-
-
-
-
-
-
 #define swre A0
 #define outputA 2
 #define outputB 3
@@ -131,15 +122,12 @@ void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(9600);
-  /*while (!Serial) {
+  while (!Serial) {
     ; //Wait for serial monitor  to be opened
-    }
-  */
+  }
 
 
-  Serial.println("Initializing SD card...");
-
-  /*if (!SD.begin(chipSelect)) {
+  if (!SD.begin(chipSelect)) {
     Serial.println("initialization failed. Things to check:");
 
     Serial.println("1. is a card inserted?");
@@ -150,8 +138,11 @@ void setup() {
 
     Serial.println("Note: press reset or reopen this serial monitor after fixing your issue!");
     while (true);
-    }
-  */
+  }
+  Serial.println("Initializing SD card...");
+
+
+
   Serial.println("initialization done.");
   Wire.begin();                // join i2c bus with address Master
   Serial.begin(9600);
@@ -160,7 +151,7 @@ void setup() {
   lcd.createChar(1, downarrow);
   lcd.createChar(2, uparrowselected);
   lcd.createChar(3, downarrowselected);
-  
+
 
   pinMode (outputA, INPUT);
   pinMode (outputB, INPUT);
@@ -212,13 +203,13 @@ void maingui() {
       // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
       if (digitalRead(outputB) != aState) {
         counter = counter + .5;
-        if (counter > 1) {
+        if (counter > 2) {
           counter = 0;
         }
       } else {
         counter = counter - .5;
         if (counter < 0) {
-          counter = 1;
+          counter = 2;
         }
       }
       Serial.print("Position: ");
@@ -231,10 +222,15 @@ void maingui() {
       Serial.println("Buttonpressed");
       if (int(counter) == 0) {
         //Clicked Print
-        lcd.clear();
+        gcodefinder();
         delay(1);
-      } else {
-        //Click Settings
+        printGui();
+      } else if (int(counter) == 1) {
+        //Clicked Settings
+
+      } else if (int(counter) == 2) {
+        //Clicked About
+
       }
     }
 
@@ -243,18 +239,41 @@ void maingui() {
 
   }
 }
-void gcodefinder() {
-  // Use LCD and ROTARY Encoder to find a gcode file
-  root = SD.open("/");
-  printDirectory(root);
 
+
+void printGui() {
+  int selected = 0;
+  lcd.clear();
+  delay(1);
+  lcd.setCursor(0, 0);
+  delay(1);
+  lcd.println("Print:");
+  delay(1);
+  lcd.setCursor(15, 0); // Sets to the last collum on the first row.
+  delay(1);
+  lcd.write(byte(2)); // the up arrow selected
+  delay(1);
+  lcd.setCursor(0, 1);
+  delay(1);
+  lcd.println(files[1]);
+  delay(1);
+  lcd.setCursor(15, 1);
+  delay(1);
+  lcd.write(byte(1));// the down arrow
 
 
 }
 
-void printDirectory(File dir) { // I need to fix this 
-  int i = 0;
+void gcodefinder() {
+
+  // Use LCD and ROTARY Encoder to find a gcode file
+  root = SD.open("/");
+  printDirectory(root);
   
+}
+void printDirectory(File dir) { // I need to fix this
+  int i = 0;
+
   while (true) {
 
     File entry =  dir.openNextFile();
@@ -277,7 +296,7 @@ void gcodereader() {
 
 
   //Before we do ANY Of the code below we must find what file we want until we press the switch!
-  myFile = SD.open("gcode.txt");
+  myFile = SD.open(gcodefile);
 
   if (myFile) {
     Serial.println("gcode.txt:");
