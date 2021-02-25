@@ -40,6 +40,27 @@ byte downarrow[8] = {
   0b00100,
   0b00000
 };
+byte uparrowselected[8] = {
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b11111,
+  0b01110,
+  0b00100,
+  0b00000
+};
+
+byte downarrowselected[8] = {
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b11111,
+  0b01110,
+  0b00100,
+  0b00000
+};
 
 
 
@@ -51,7 +72,7 @@ byte downarrow[8] = {
 
 
 
-#define swre A1
+#define swre A0
 #define outputA 2
 #define outputB 3
 
@@ -96,12 +117,12 @@ int lengthstr;
 
 
 
-int counter = 0;
+double counter = 0;
 int aState;
 int aLastState;
+uint8_t sensorValA0_prev;
 
-
-
+String files[10];
 
 
 
@@ -137,18 +158,20 @@ void setup() {
   lcd.begin(16, 2);
   lcd.createChar(0, uparrow);
   lcd.createChar(1, downarrow);
-
-
+  lcd.createChar(2, uparrowselected);
+  lcd.createChar(3, downarrowselected);
+  
 
   pinMode (outputA, INPUT);
   pinMode (outputB, INPUT);
   pinMode (swre, INPUT_PULLUP);
   aLastState = digitalRead(outputA);
+  sensorValA0_prev = digitalRead(swre);
 
 
 
   //
-  guisetup();
+  maingui();
   //open file for reading
   //gcodefinder();
   //use file
@@ -163,7 +186,7 @@ void loop() {
 
 }
 
-void guisetup() {
+void maingui() {
   int selected = 0;
   lcd.clear();
   delay(1);
@@ -189,24 +212,33 @@ void guisetup() {
       // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
       if (digitalRead(outputB) != aState) {
         counter = counter + .5;
+        if (counter > 1) {
+          counter = 0;
+        }
       } else {
         counter = counter - .5;
+        if (counter < 0) {
+          counter = 1;
+        }
       }
       Serial.print("Position: ");
       Serial.println(counter);
       aLastState = aState;
     }
-    int sensorValA1 = digitalRead(swre);
-    if (sensorValA1 == LOW) {
-
+    uint8_t sensorValA0 = digitalRead(swre);
+    if (sensorValA0 == LOW && sensorValA0_prev == HIGH)
+    {
       Serial.println("Buttonpressed");
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.println("lol");
-      while (sensorValA1 != HIGH) {
-
+      if (int(counter) == 0) {
+        //Clicked Print
+        lcd.clear();
+        delay(1);
+      } else {
+        //Click Settings
       }
     }
+
+    sensorValA0_prev = digitalRead(swre);
 
 
   }
@@ -220,10 +252,9 @@ void gcodefinder() {
 
 }
 
-void
-printDirectory(File dir) {
+void printDirectory(File dir) { // I need to fix this 
   int i = 0;
-  String files[1000];
+  
   while (true) {
 
     File entry =  dir.openNextFile();
