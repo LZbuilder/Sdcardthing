@@ -129,7 +129,9 @@ void setup() {
 
 
   Serial.println("Initializing SD card...");
-
+  if (!SD.begin()) {
+    Serial.println("NOPE");
+  }
 
 
   Serial.println("initialization done.");
@@ -167,12 +169,12 @@ void loop() {
 }
 
 void maingui() {
+  boolean truefalse = true;
   int selected = 0;
+  char *text[] = {"Print       ", "Settings        ", "About         "};
   lcd.clear();
   delay(1);
-  lcd.setCursor(0, 0);
-  delay(1);
-  lcd.println("Print:");
+  lcd.println(text[0]);
   delay(1);
   lcd.setCursor(15, 0); // Sets to the last collum on the first row.
   delay(1);
@@ -180,12 +182,13 @@ void maingui() {
   delay(1);
   lcd.setCursor(0, 1);
   delay(1);
-  lcd.println("Settings:");
+  lcd.println(text[1]);
   delay(1);
   lcd.setCursor(15, 1);
   delay(1);
   lcd.write(byte(1));// the down arrow
-  while (true) {
+  while (true) { // While on the main screen you do this...
+
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
     // If the previous and the current state of the outputA are different, that means a Pulse has occured
     if (aState != aLastState) {
@@ -195,16 +198,38 @@ void maingui() {
         if (counter > 2) {
           counter = 0;
         }
-      } else {
-        counter = counter - .5;
         if (counter < 0) {
           counter = 2;
         }
       }
+      else {
+        counter = counter - .5;
+        if (counter < 0) {
+          counter = 2;
+        }
+        if (counter > 2) {
+          counter = 0;
+        }
+
+      }
       Serial.print("Position: ");
       Serial.println(counter);
       aLastState = aState;
+      //Now we do to scrolling up and down
+      lcd.clear();
+      delay(1);
+      lcd.println(text[int(counter)]);
+      lcd.setCursor(0, 1);
+      delay(1);
+      lcd.println(text[int(counter + 1)]);
     }
+
+
+
+
+
+
+
     uint8_t sensorValA0 = digitalRead(swre);
     if (sensorValA0 == LOW && sensorValA0_prev == HIGH)
     {
@@ -214,6 +239,7 @@ void maingui() {
         gcodefinder();
         delay(1);
         printGui();
+        break;
       } else if (int(counter) == 1) {
         //Clicked Settings
 
@@ -234,7 +260,6 @@ void printGui() {
   int selected = 0;
   lcd.clear();
   delay(1);
-  lcd.setCursor(0, 0);
   delay(1);
   lcd.println("Print:");
   delay(1);
@@ -244,7 +269,7 @@ void printGui() {
   delay(1);
   lcd.setCursor(0, 1);
   delay(1);
-  lcd.println(files[1]);
+  lcd.println(files[selected]);
   delay(1);
   lcd.setCursor(15, 1);
   delay(1);
@@ -272,7 +297,7 @@ void printDirectory(File dir) { // I need to fix this
 
     if (i != 0) {
       files[i - 1] = entry.name();
-      Serial.println(files[0]);
+      Serial.println(files[i - 1]);
     }
 
     entry.close();
