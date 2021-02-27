@@ -171,7 +171,7 @@ void loop() {
 void maingui() {
   boolean truefalse = true;
   int selected = 0;
-  char *text[] = {"Print       ", "Settings        ", "About         "};
+  char *text[] = {"Print           ", "Settings        ", "About           "};
   lcd.clear();
   delay(1);
   lcd.println(text[0]);
@@ -194,7 +194,15 @@ void maingui() {
     if (aState != aLastState) {
       // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
       if (digitalRead(outputB) != aState) {
-        counter = counter + .5;
+        if (truefalse) {
+          counter ++;
+          truefalse = false;
+
+        } else {
+
+          truefalse = true;
+
+        }
         if (counter > 2) {
           counter = 0;
         }
@@ -203,7 +211,14 @@ void maingui() {
         }
       }
       else {
-        counter = counter - .5;
+        if (truefalse) {
+          counter --;
+          truefalse = false;
+        } else {
+
+          truefalse = true;
+
+        }
         if (counter < 0) {
           counter = 2;
         }
@@ -242,7 +257,7 @@ void maingui() {
         break;
       } else if (int(counter) == 1) {
         //Clicked Settings
-
+        
       } else if (int(counter) == 2) {
         //Clicked About
 
@@ -257,7 +272,9 @@ void maingui() {
 
 
 void printGui() {
+  boolean truefalse = true;
   int selected = 0;
+  char *text[] = {"Print       ", "Settings        ", "About         "};
   lcd.clear();
   delay(1);
   delay(1);
