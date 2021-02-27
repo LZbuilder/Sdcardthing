@@ -171,7 +171,7 @@ void loop() {
 void maingui() {
   boolean truefalse = true;
   int selected = 0;
-  char *text[] = {"Print           ", "Settings        ", "About           "};
+  char *text[] = {"Print           ", "Settings        ", "About           ", "----------------"};
   lcd.clear();
   delay(1);
   lcd.println(text[0]);
@@ -195,7 +195,7 @@ void maingui() {
       // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
       if (digitalRead(outputB) != aState) {
         if (truefalse) {
-          counter ++;
+          counter --;
           truefalse = false;
 
         } else {
@@ -212,7 +212,7 @@ void maingui() {
       }
       else {
         if (truefalse) {
-          counter --;
+          counter ++;
           truefalse = false;
         } else {
 
@@ -274,11 +274,11 @@ void maingui() {
 void printGui() {
   boolean truefalse = true;
   int selected = 0;
-  char *text[] = {"Print       ", "Settings        ", "About         "};
+  char *text[] = {"Printing:       ", "", ""};
   lcd.clear();
   delay(1);
   delay(1);
-  lcd.println("Print:");
+  lcd.println(text[0]);
   delay(1);
   lcd.setCursor(15, 0); // Sets to the last collum on the first row.
   delay(1);
@@ -321,6 +321,14 @@ void printDirectory(File dir) { // I need to fix this
     i++;
   }
 }
+
+
+
+
+
+
+
+
 
 void gcodereader() {
 
