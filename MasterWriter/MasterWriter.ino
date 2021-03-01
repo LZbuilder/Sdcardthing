@@ -61,8 +61,27 @@ byte downarrowselected[8] = {
   0b00100,
   0b00000
 };
+byte dot[8] = {
+  0b00000,
+  0b00000,
+  0b11111,
+  0b11111,
+  0b11111,
+  0b11111,
+  0b00000,
+  0b00000
+};
 
-
+byte opendot[8] = {
+  0b00000,
+  0b00000,
+  0b11111,
+  0b10001,
+  0b10001,
+  0b11111,
+  0b00000,
+  0b00000
+};
 #define swre A0
 #define outputA 2
 #define outputB 3
@@ -142,8 +161,8 @@ void setup() {
   lcd.createChar(1, downarrow);
   lcd.createChar(2, uparrowselected);
   lcd.createChar(3, downarrowselected);
-
-
+  lcd.createChar(4, dot);
+  lcd.createChar(5, opendot);
   pinMode (outputA, INPUT);
   pinMode (outputB, INPUT);
   pinMode (swre, INPUT_PULLUP);
@@ -169,6 +188,7 @@ void loop() {
 }
 
 void maingui() {
+  counter = 0;
   boolean truefalse = true;
   int selected = 0;
   char *text[] = {"Print           ", "Settings        ", "About           ", "----------------"};
@@ -257,10 +277,10 @@ void maingui() {
         break;
       } else if (int(counter) == 1) {
         //Clicked Settings
-        
+        settingsGui();
       } else if (int(counter) == 2) {
         //Clicked About
-
+        aboutGui();
       }
     }
 
@@ -272,9 +292,10 @@ void maingui() {
 
 
 void printGui() {
+  counter = 0;
   boolean truefalse = true;
   int selected = 0;
-  char *text[] = {"Printing:       ", "", ""};
+  char *text[] = {"Prints:         ", ""};
   lcd.clear();
   delay(1);
   delay(1);
@@ -282,16 +303,83 @@ void printGui() {
   delay(1);
   lcd.setCursor(15, 0); // Sets to the last collum on the first row.
   delay(1);
-  lcd.write(byte(2)); // the up arrow selected
+  lcd.write(byte(4)); // the dot
   delay(1);
   lcd.setCursor(0, 1);
   delay(1);
-  lcd.println(files[selected]);
+  lcd.println(files[0]);
   delay(1);
   lcd.setCursor(15, 1);
   delay(1);
-  lcd.write(byte(1));// the down arrow
+  lcd.write(byte(5));// the down arrow
 
+  while (true) { // While on the main screen you do this...
+
+    aState = digitalRead(outputA); // Reads the "current" state of the outputA
+    // If the previous and the current state of the outputA are different, that means a Pulse has occured
+    if (aState != aLastState) {
+      // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
+      if (digitalRead(outputB) != aState) {
+        if (truefalse) {
+          counter --;
+          truefalse = false;
+
+        } else {
+
+          truefalse = true;
+
+        }
+        if (counter > 10) {
+          counter = 0;
+        }
+        if (counter < 0) {
+          counter = 10;
+        }
+      }
+      else {
+        if (truefalse) {
+          counter ++;
+          truefalse = false;
+        } else {
+
+          truefalse = true;
+
+        }
+        if (counter < 0) {
+          counter = 10;
+        }
+        if (counter > 10) {
+          counter = 0;
+        }
+
+      }
+      Serial.print("Position: ");
+      Serial.println(counter);
+      aLastState = aState;
+      //PrintGui
+      //Now we do to scrolling up and down
+      lcd.clear();
+      delay(1);
+      lcd.println(text[0]);
+      lcd.setCursor(0, 1);
+      delay(1);
+      lcd.println(files[int(counter)]);
+    }
+    // Code that makes the buttonpressed work
+    uint8_t sensorValA0 = digitalRead(swre);
+    if (sensorValA0 == LOW && sensorValA0_prev == HIGH)
+    {
+      Serial.println("Buttonpressed");
+      if (int(counter) == 0) {
+        //Go Back To main screen
+
+      }
+    }
+
+    sensorValA0_prev = digitalRead(swre);
+
+
+  }
 
 }
 
@@ -322,8 +410,13 @@ void printDirectory(File dir) { // I need to fix this
   }
 }
 
+void settingsGui() {
 
+}
 
+void aboutGui() {
+
+}
 
 
 
@@ -338,7 +431,7 @@ void gcodereader() {
   myFile = SD.open(gcodefile);
 
   if (myFile) {
-    Serial.println("gcode.txt:");
+    Serial.println("Opening " + gcodefile);
 
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
