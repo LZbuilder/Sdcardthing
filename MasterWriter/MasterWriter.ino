@@ -127,7 +127,7 @@ int lengthstr;
 
 
 
-double counter = 0;
+int counter = 0;
 int aState;
 int aLastState;
 uint8_t sensorValA0_prev;
@@ -188,6 +188,7 @@ void loop() {
 }
 
 void maingui() {
+  delay(1000);
   counter = 0;
   boolean truefalse = true;
   int selected = 0;
@@ -207,7 +208,8 @@ void maingui() {
   lcd.setCursor(15, 1);
   delay(1);
   lcd.write(byte(1));// the down arrow
-  while (true) { // While on the main screen you do this...
+  boolean whiletrue = true;
+  while (whiletrue) { // While on the main screen you do this...
 
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
     // If the previous and the current state of the outputA are different, that means a Pulse has occured
@@ -271,16 +273,31 @@ void maingui() {
       Serial.println("Buttonpressed");
       if (int(counter) == 0) {
         //Clicked Print
+        Serial.println("PrintGui");
+
+        lcd.clear();
+        lcd.setCursor(0, 1);
+        delay(1);
+        lcd.println("Loading...      ");
         gcodefinder();
         delay(1);
         printGui();
         break;
+
       } else if (int(counter) == 1) {
         //Clicked Settings
+        Serial.println("SettingsGui");
+
         settingsGui();
+        break;
+
       } else if (int(counter) == 2) {
         //Clicked About
+        Serial.println("AboutGui");
+
         aboutGui();
+        break;
+
       }
     }
 
@@ -292,12 +309,12 @@ void maingui() {
 
 
 void printGui() {
+  delay(1000);
   counter = 0;
   boolean truefalse = true;
   int selected = 0;
   char *text[] = {"Prints:         ", ""};
   lcd.clear();
-  delay(1);
   delay(1);
   lcd.println(text[0]);
   delay(1);
@@ -311,9 +328,9 @@ void printGui() {
   delay(1);
   lcd.setCursor(15, 1);
   delay(1);
-  lcd.write(byte(5));// the down arrow
-
-  while (true) { // While on the main screen you do this...
+  lcd.write(byte(5));// the opendot
+  boolean whiletrue = true;
+  while (whiletrue) { // While on the main screen you do this...
 
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
     // If the previous and the current state of the outputA are different, that means a Pulse has occured
@@ -322,6 +339,7 @@ void printGui() {
       if (digitalRead(outputB) != aState) {
         if (truefalse) {
           counter --;
+
           truefalse = false;
 
         } else {
@@ -330,11 +348,12 @@ void printGui() {
 
         }
         if (counter > 10) {
-          counter = 0;
+          counter = -1;
         }
-        if (counter < 0) {
+        if (counter < -1) {
           counter = 10;
         }
+
       }
       else {
         if (truefalse) {
@@ -345,11 +364,11 @@ void printGui() {
           truefalse = true;
 
         }
-        if (counter < 0) {
+        if (counter < -1) {
           counter = 10;
         }
         if (counter > 10) {
-          counter = 0;
+          counter = -1;
         }
 
       }
@@ -364,15 +383,36 @@ void printGui() {
       lcd.setCursor(0, 1);
       delay(1);
       lcd.println(files[int(counter)]);
+      if (counter == -1) {
+        lcd.setCursor(15, 0); // Sets to the last collum on the first row.
+        delay(1);
+        lcd.write(byte(4)); // the dot
+        lcd.setCursor(0, 1); // Sets to the last collum on the first row.
+        delay(1);
+        lcd.write("<-- Back"); // the dot
+      } else {
+        lcd.setCursor(15, 0); // Sets to the last collum on the first row.
+        delay(1);
+        lcd.write(" "); // the dot
+      }
     }
     // Code that makes the buttonpressed work
     uint8_t sensorValA0 = digitalRead(swre);
     if (sensorValA0 == LOW && sensorValA0_prev == HIGH)
     {
       Serial.println("Buttonpressed");
-      if (int(counter) == 0) {
+      if (counter == -1) {
         //Go Back To main screen
 
+        maingui();
+        break;
+      } else if (files[0] != "" && counter > -1) {
+
+        gcodefile = files[counter];
+        Serial.println(gcodefile);
+        gcodereader();
+
+        break;
       }
     }
 
@@ -411,10 +451,12 @@ void printDirectory(File dir) { // I need to fix this
 }
 
 void settingsGui() {
+  delay(1000);
 
 }
 
 void aboutGui() {
+  delay(1000);
 
 }
 
@@ -424,7 +466,7 @@ void aboutGui() {
 
 
 void gcodereader() {
-
+  Serial.println("gcodereader was inicated");
 
 
   //Before we do ANY Of the code below we must find what file we want until we press the switch!
