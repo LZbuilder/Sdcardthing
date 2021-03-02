@@ -209,7 +209,7 @@ void maingui() {
   delay(1);
   lcd.write(byte(1));// the down arrow
   boolean whiletrue = true;
-  while (whiletrue) { // While on the main screen you do this...
+  while (true) { // While on the main screen you do this...
 
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
     // If the previous and the current state of the outputA are different, that means a Pulse has occured
@@ -329,8 +329,8 @@ void printGui() {
   lcd.setCursor(15, 1);
   delay(1);
   lcd.write(byte(5));// the opendot
-  boolean whiletrue = true;
-  while (whiletrue) { // While on the main screen you do this...
+  
+  while (true) { // While on the main screen you do this...
 
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
     // If the previous and the current state of the outputA are different, that means a Pulse has occured
