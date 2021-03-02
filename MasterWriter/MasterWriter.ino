@@ -148,8 +148,10 @@ void setup() {
 
 
   Serial.println("Initializing SD card...");
-  if (!SD.begin()) {
+
+  if (!SD.begin(chipSelect)) {
     Serial.println("NOPE");
+    while (true);
   }
 
 
@@ -280,7 +282,7 @@ void maingui() {
         delay(1);
         lcd.println("Loading...      ");
         gcodefinder();
-        delay(1);
+        delay(10);
         printGui();
         break;
 
