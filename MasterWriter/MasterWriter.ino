@@ -17,71 +17,6 @@
 
 */
 
-//custom characters for lcd
-//this is the zeroth character
-byte uparrow[8] = {
-  0b00000,
-  0b00100,
-  0b01010,
-  0b10001,
-  0b00000,
-  0b00000,
-  0b00000,
-  0b00000
-};
-// this is the first character
-byte downarrow[8] = {
-  0b00000,
-  0b00000,
-  0b00000,
-  0b00000,
-  0b10001,
-  0b01010,
-  0b00100,
-  0b00000
-};
-byte uparrowselected[8] = {
-  0b00100,
-  0b01110,
-  0b11111,
-  0b00000,
-  0b00000,
-  0b00000,
-  0b00000,
-  0b00000
-};
-
-byte downarrowselected[8] = {
-  0b00000,
-  0b00000,
-  0b00000,
-  0b00000,
-  0b11111,
-  0b01110,
-  0b00100,
-  0b00000
-};
-byte dot[8] = {
-  0b00000,
-  0b00000,
-  0b11111,
-  0b11111,
-  0b11111,
-  0b11111,
-  0b00000,
-  0b00000
-};
-
-byte opendot[8] = {
-  0b00000,
-  0b00000,
-  0b11111,
-  0b10001,
-  0b10001,
-  0b11111,
-  0b00000,
-  0b00000
-};
 #define swre A0
 #define outputA 2
 #define outputB 3
@@ -159,12 +94,6 @@ void setup() {
   Wire.begin();                // join i2c bus with address Master
   Serial.begin(9600);
   lcd.begin(16, 2);
-  lcd.createChar(0, uparrow);
-  lcd.createChar(1, downarrow);
-  lcd.createChar(2, uparrowselected);
-  lcd.createChar(3, downarrowselected);
-  lcd.createChar(4, dot);
-  lcd.createChar(5, opendot);
   pinMode (outputA, INPUT);
   pinMode (outputB, INPUT);
   pinMode (swre, INPUT_PULLUP);
@@ -311,7 +240,7 @@ void maingui() {
 
 
 void printGui() {
-  delay(1000);
+  delay(10);
   counter = 0;
   boolean truefalse = true;
   int selected = 0;
@@ -322,15 +251,12 @@ void printGui() {
   delay(1);
   lcd.setCursor(15, 0); // Sets to the last collum on the first row.
   delay(1);
-  lcd.write(byte(4)); // the dot
-  delay(1);
   lcd.setCursor(0, 1);
   delay(1);
   lcd.println(files[0]);
   delay(1);
   lcd.setCursor(15, 1);
   delay(1);
-  lcd.write(byte(5));// the opendot
   
   while (true) { // While on the main screen you do this...
 
@@ -413,7 +339,6 @@ void printGui() {
         gcodefile = files[counter];
         Serial.println(gcodefile);
         gcodereader();
-
         break;
       }
     }
@@ -426,10 +351,13 @@ void printGui() {
 }
 
 void gcodefinder() {
+  
   // Use LCD and ROTARY Encoder to find a gcode file
+  
   root = SD.open("/");
+  delay(1);
   printDirectory(root);
-
+delay(1);
 }
 void printDirectory(File dir) { // I need to fix this
   int i = 0;
@@ -437,7 +365,7 @@ void printDirectory(File dir) { // I need to fix this
   while (true) {
 
     File entry =  dir.openNextFile();
-    if (! entry) {
+    if (!entry) {
       // no more files
       break;
     }
@@ -449,6 +377,7 @@ void printDirectory(File dir) { // I need to fix this
 
     entry.close();
     i++;
+    delay(1);
   }
 }
 
