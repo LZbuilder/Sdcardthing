@@ -66,7 +66,6 @@ int counter = 0;
 int aState;
 int aLastState;
 uint8_t sensorValA0_prev;
-boolean buttonpressed = false;
 
 String files[10];
 
@@ -120,7 +119,7 @@ void loop() {
 }
 
 void maingui() {
-  delay(500);
+  delay(10);
   counter = 0;
   boolean truefalse = true;
   int selected = 0;
@@ -129,10 +128,17 @@ void maingui() {
   delay(1);
   lcd.println(text[0]);
   delay(1);
+  lcd.setCursor(15, 0); // Sets to the last collum on the first row.
+  delay(1);
+  lcd.write(byte(0)); // the up arrow
+  delay(1);
   lcd.setCursor(0, 1);
   delay(1);
   lcd.println(text[1]);
   delay(1);
+  lcd.setCursor(15, 1);
+  delay(1);
+  lcd.write(byte(1));// the down arrow
   boolean whiletrue = true;
   while (true) { // While on the main screen you do this...
 
@@ -186,183 +192,160 @@ void maingui() {
       lcd.println(text[int(counter + 1)]);
     }
 
-
-
-
-
-
-
     uint8_t sensorValA0 = digitalRead(swre);
     if (sensorValA0 == LOW && sensorValA0_prev == HIGH)
     {
       Serial.println("Buttonpressed");
-      buttonpressed = true;
-    } else {
-      buttonpressed = false;
-    }
-    if (buttonpressed){
-      buttonpressed = false;
       if (int(counter) == 0) {
         //Clicked Print
         Serial.println("PrintGui");
-        sensorValA0 = digitalRead(swre);
+
         lcd.clear();
         lcd.setCursor(0, 1);
         delay(1);
         lcd.println("Loading...      ");
         gcodefinder();
-        
-        break;
+        delay(10);
+        while (true) {
+          delay(10);
+          counter = 0;
+          boolean truefalse = true;
+          int selected = 0;
+          char *text[] = {"Prints:         "};
+          lcd.clear();
+          delay(1);
+          lcd.println(text[0]);
+          delay(1);
+          lcd.setCursor(15, 0); // Sets to the last collum on the first row.
+          delay(1);
+          lcd.setCursor(0, 1);
+          delay(1);
+          lcd.println(files[0]);
+          delay(1);
+          lcd.setCursor(15, 1);
+          delay(1);
 
+          while (true) { // While on the Print screen you do this...
+
+            aState = digitalRead(outputA); // Reads the "current" state of the outputA
+            // If the previous and the current state of the outputA are different, that means a Pulse has occured
+            if (aState != aLastState) {
+              // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
+              if (digitalRead(outputB) != aState) {
+                if (truefalse) {
+                  counter --;
+
+                  truefalse = false;
+
+                } else {
+
+                  truefalse = true;
+
+                }
+                if (counter > 10) {
+                  counter = -1;
+                }
+                if (counter < -1) {
+                  counter = 10;
+                }
+
+              }
+              else {
+                if (truefalse) {
+                  counter ++;
+                  truefalse = false;
+                } else {
+
+                  truefalse = true;
+
+                }
+                if (counter < -1) {
+                  counter = 10;
+                }
+                if (counter > 10) {
+                  counter = -1;
+                }
+
+              }
+              Serial.print("Position: ");
+              Serial.println(counter);
+              aLastState = aState;
+              //PrintGui
+              //Now we do to scrolling up and down
+              lcd.clear();
+              delay(1);
+              lcd.println(text[0]);
+              lcd.setCursor(0, 1);
+              delay(1);
+              lcd.println(files[int(counter)]);
+              if (counter == -1) {
+                lcd.setCursor(0, 1); // Sets to the last collum on the first row.
+                delay(1);
+                lcd.write("<-- Back"); // the dot
+              } else {
+                lcd.setCursor(15, 0); // Sets to the last collum on the first row.
+                delay(1);
+                lcd.write(" "); // the dot
+              }
+            }
+            // Code that makes the buttonpressed work
+            uint8_t sensorValA0 = digitalRead(swre);
+            if (sensorValA0 == LOW && sensorValA0_prev == HIGH)
+            {
+              Serial.println("Buttonpressed");
+              if (counter == -1) {
+                //Go Back To main screen
+
+                maingui();
+                break;
+              } else if (files[0] != "" && counter > -1) {
+
+                gcodefile = files[counter];
+                delay(1);
+                Serial.println(gcodefile);
+                delay(1);
+                gcodereader();
+                break;
+              }
+            }
+
+            sensorValA0_prev = digitalRead(swre);
+
+
+          }
+          break;
+        }
+        break;
       } else if (int(counter) == 1) {
         //Clicked Settings
         Serial.println("SettingsGui");
-        sensorValA0 = digitalRead(swre);
-        settingsGui();
+        //SettingGui
         break;
 
       } else if (int(counter) == 2) {
         //Clicked About
         Serial.println("AboutGui");
-        sensorValA0 = digitalRead(swre);
-        aboutGui();
+        //AboutGui
         break;
 
       }
     }
+
     sensorValA0_prev = digitalRead(swre);
 
 
   }
 }
 
-
-void printGui() {
-  delay(500);
-  counter = 0;
-  boolean truefalse = true;
-  int selected = 0;
-  char *text[] = {"Prints:         ", ""};
-  lcd.clear();
-  delay(1);
-  lcd.println(text[0]);
-  delay(1);
-  lcd.setCursor(15, 0); // Sets to the last collum on the first row.
-  delay(1);
-  lcd.setCursor(0, 1);
-  delay(1);
-  lcd.println(files[0]);
-  delay(1);
-  lcd.setCursor(15, 1);
-  delay(1);
-
-  while (true) { // While on the main screen you do this...
-
-    aState = digitalRead(outputA); // Reads the "current" state of the outputA
-    // If the previous and the current state of the outputA are different, that means a Pulse has occured
-    if (aState != aLastState) {
-      // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-      if (digitalRead(outputB) != aState) {
-        if (truefalse) {
-          counter --;
-
-          truefalse = false;
-
-        } else {
-
-          truefalse = true;
-
-        }
-        if (counter > 10) {
-          counter = -1;
-        }
-        if (counter < -1) {
-          counter = 10;
-        }
-
-      }
-      else {
-        if (truefalse) {
-          counter ++;
-          truefalse = false;
-        } else {
-
-          truefalse = true;
-
-        }
-        if (counter < -1) {
-          counter = 10;
-        }
-        if (counter > 10) {
-          counter = -1;
-        }
-
-      }
-      Serial.print("Position: ");
-      Serial.println(counter);
-      aLastState = aState;
-      //PrintGui
-      //Now we do to scrolling up and down
-      lcd.clear();
-      delay(1);
-      lcd.println(text[0]);
-      lcd.setCursor(0, 1);
-      delay(1);
-      lcd.println(files[int(counter)]);
-      if (counter == -1) {
-        lcd.setCursor(15, 0); // Sets to the last collum on the first row.
-        delay(1);
-        lcd.setCursor(0, 1); // Sets to the last collum on the first row.
-        delay(1);
-        lcd.write("<-- Back"); // the dot
-      } else {
-        lcd.setCursor(15, 0); // Sets to the last collum on the first row.
-        delay(1);
-        lcd.write(" "); // the dot
-      }
-    }
-    // Code that makes the buttonpressed work
-    uint8_t sensorValA0 = digitalRead(swre);
-    if (sensorValA0 == LOW && sensorValA0_prev == HIGH)
-    {
-      Serial.println("Buttonpressed");
-      buttonpressed = true;
-    } else {
-      buttonpressed = false;
-    }
-    if (buttonpressed) {
-      buttonpressed = false;
-      if (counter == -1) {
-        //Go Back To main screen
-        sensorValA0 = digitalRead(swre);
-        delay(10);
-        maingui();
-        break;
-      } else if (files[0] != "" && counter > -1) {
-        delay(10);
-        gcodefile = files[counter];
-        delay(10);
-        Serial.println(gcodefile);
-        delay(10);
-        gcodereader();
-        break;
-      }
-    }
-    sensorValA0_prev = digitalRead(swre);
-
-
-  }
-
-}
 
 void gcodefinder() {
 
   // Use LCD and ROTARY Encoder to find a gcode file
 
   root = SD.open("/");
-  delay(10);
+  delay(1);
   printDirectory(root);
-  delay(10);
+  delay(1);
 }
 void printDirectory(File dir) { // I need to fix this
   int i = 0;
@@ -370,7 +353,7 @@ void printDirectory(File dir) { // I need to fix this
   while (true) {
 
     File entry =  dir.openNextFile();
-    if (!entry) {
+    if (! entry) {
       // no more files
       break;
     }
@@ -384,21 +367,7 @@ void printDirectory(File dir) { // I need to fix this
     i++;
     delay(1);
   }
-  printGui();
 }
-
-void settingsGui() {
-  delay(1000);
-
-}
-
-void aboutGui() {
-  delay(1000);
-
-}
-
-
-
 
 void gcodereader() {
   Serial.println("gcodereader was inicated");
@@ -454,9 +423,8 @@ void gcodereader() {
                 x = xval.toDouble();
                 Serial.println(x);
                 xwholenumber = int(x); // or you can just send it over a byte
-                Serial.println(xwholenumber);
+                delay(1);
                 xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
-                Serial.println(xremainder);
                 delay(1);
                 Wire.beginTransmission(4); // transmit to device #4
                 delay(1);
