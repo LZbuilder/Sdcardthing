@@ -66,6 +66,7 @@ int counter = 0;
 int aState;
 int aLastState;
 uint8_t sensorValA0_prev;
+boolean buttonpressed = false;
 
 String files[10];
 
@@ -119,7 +120,7 @@ void loop() {
 }
 
 void maingui() {
-  delay(1000);
+  delay(500);
   counter = 0;
   boolean truefalse = true;
   int selected = 0;
@@ -128,17 +129,10 @@ void maingui() {
   delay(1);
   lcd.println(text[0]);
   delay(1);
-  lcd.setCursor(15, 0); // Sets to the last collum on the first row.
-  delay(1);
-  lcd.write(byte(0)); // the up arrow
-  delay(1);
   lcd.setCursor(0, 1);
   delay(1);
   lcd.println(text[1]);
   delay(1);
-  lcd.setCursor(15, 1);
-  delay(1);
-  lcd.write(byte(1));// the down arrow
   boolean whiletrue = true;
   while (true) { // While on the main screen you do this...
 
@@ -202,36 +196,40 @@ void maingui() {
     if (sensorValA0 == LOW && sensorValA0_prev == HIGH)
     {
       Serial.println("Buttonpressed");
+      buttonpressed = true;
+    } else {
+      buttonpressed = false;
+    }
+    if (buttonpressed){
+      buttonpressed = false;
       if (int(counter) == 0) {
         //Clicked Print
         Serial.println("PrintGui");
-
+        sensorValA0 = digitalRead(swre);
         lcd.clear();
         lcd.setCursor(0, 1);
         delay(1);
         lcd.println("Loading...      ");
         gcodefinder();
-        delay(10);
-        printGui();
+        
         break;
 
       } else if (int(counter) == 1) {
         //Clicked Settings
         Serial.println("SettingsGui");
-
+        sensorValA0 = digitalRead(swre);
         settingsGui();
         break;
 
       } else if (int(counter) == 2) {
         //Clicked About
         Serial.println("AboutGui");
-
+        sensorValA0 = digitalRead(swre);
         aboutGui();
         break;
 
       }
     }
-
     sensorValA0_prev = digitalRead(swre);
 
 
@@ -240,7 +238,7 @@ void maingui() {
 
 
 void printGui() {
-  delay(10);
+  delay(500);
   counter = 0;
   boolean truefalse = true;
   int selected = 0;
@@ -257,7 +255,7 @@ void printGui() {
   delay(1);
   lcd.setCursor(15, 1);
   delay(1);
-  
+
   while (true) { // While on the main screen you do this...
 
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
@@ -314,7 +312,6 @@ void printGui() {
       if (counter == -1) {
         lcd.setCursor(15, 0); // Sets to the last collum on the first row.
         delay(1);
-        lcd.write(byte(4)); // the dot
         lcd.setCursor(0, 1); // Sets to the last collum on the first row.
         delay(1);
         lcd.write("<-- Back"); // the dot
@@ -329,20 +326,28 @@ void printGui() {
     if (sensorValA0 == LOW && sensorValA0_prev == HIGH)
     {
       Serial.println("Buttonpressed");
+      buttonpressed = true;
+    } else {
+      buttonpressed = false;
+    }
+    if (buttonpressed) {
+      buttonpressed = false;
       if (counter == -1) {
         //Go Back To main screen
-
+        sensorValA0 = digitalRead(swre);
+        delay(10);
         maingui();
         break;
       } else if (files[0] != "" && counter > -1) {
-
+        delay(10);
         gcodefile = files[counter];
+        delay(10);
         Serial.println(gcodefile);
+        delay(10);
         gcodereader();
         break;
       }
     }
-
     sensorValA0_prev = digitalRead(swre);
 
 
@@ -351,13 +356,13 @@ void printGui() {
 }
 
 void gcodefinder() {
-  
+
   // Use LCD and ROTARY Encoder to find a gcode file
-  
+
   root = SD.open("/");
-  delay(1);
+  delay(10);
   printDirectory(root);
-delay(1);
+  delay(10);
 }
 void printDirectory(File dir) { // I need to fix this
   int i = 0;
@@ -379,6 +384,7 @@ void printDirectory(File dir) { // I need to fix this
     i++;
     delay(1);
   }
+  printGui();
 }
 
 void settingsGui() {
@@ -390,8 +396,6 @@ void aboutGui() {
   delay(1000);
 
 }
-
-
 
 
 
@@ -510,8 +514,6 @@ void gcodereader() {
             }
           }
       }
-
-
     }
   }
 }
