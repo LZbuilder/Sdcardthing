@@ -17,16 +17,16 @@
 
 */
 
-#define swre A0
-#define outputA 2
-#define outputB 3
+#define swre A0 // The Switch on The Rotary encoder connected to Anolag pin 0
+#define outputA 2 // Fuck this
+#define outputB 3 // Fuck this
 
-#include <Wire.h>
-#include <LiquidCrystal.h>
-#include <SPI.h>
-#include <SD.h>
-const int rs = 8, en = 9, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+#include <Wire.h> // Wire Libary inorder for the two arduinos to communicate they use Anolag Pins 4 and 5
+#include <LiquidCrystal.h> // The Library for lcd
+#include <SPI.h> // Libary for SD card Reading and List files
+#include <SD.h> // Libary for SD card Reading and List files
+const int rs = 8, en = 9, d4 = 4, d5 = 5, d6 = 6, d7 = 7; // Defining Variables for the lcd
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);// Setting up the lcd
 
 const int chipSelect = 10;
 File myFile;
@@ -205,7 +205,7 @@ void maingui() {
         delay(1);
         lcd.println("Loading...      ");
         gcodefinder();
-        delay(10);
+        delay(300);
         while (true) {
           delay(10);
           counter = 0;
@@ -295,11 +295,11 @@ void maingui() {
               Serial.println("Buttonpressed");
               if (counter == -1) {
                 //Go Back To main screen
-
+                sensorValA0_prev = digitalRead(swre);
                 maingui();
                 break;
               } else if (files[0] != "" && counter > -1) {
-
+                sensorValA0_prev = digitalRead(swre);
                 gcodefile = files[counter];
                 delay(1);
                 Serial.println(gcodefile);
@@ -343,9 +343,9 @@ void gcodefinder() {
   // Use LCD and ROTARY Encoder to find a gcode file
 
   root = SD.open("/");
-  delay(1);
+  delay(10);
   printDirectory(root);
-  delay(1);
+  delay(10);
 }
 void printDirectory(File dir) { // I need to fix this
   int i = 0;
@@ -381,10 +381,6 @@ void gcodereader() {
 
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
-
-
-
-      //delay(delaytime);
       recieveval = false;
       gval = "";
       xval = "";
