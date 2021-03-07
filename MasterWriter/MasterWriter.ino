@@ -28,23 +28,19 @@
 const int rs = 8, en = 9, d4 = 4, d5 = 5, d6 = 6, d7 = 7; // Defining Variables for the lcd
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);// Setting up the lcd
 
-const int chipSelect = 10;
+const short chipSelect = 10;
 File myFile;
 File root;
 
 boolean recieveval = false;
-
-int amountrecived = 0;
+String gcodefile = "gcode.txt";
 
 const int delaytime = 4000; // important
-//work in progres
-String strstuff = "G23 X42 Y54.245   Z4; E31; ";
+
 double g = 0;
 String gval = "";
 String xval = "";
 String yval = "";
-
-String gcodefile = "gcode.txt";
 
 
 double x = 0; //end result of what comes after x
@@ -57,7 +53,7 @@ byte yremainder;
 
 char singleletterchar; int singleletterint;
 String multiple[] = {};
-int i;
+short i;
 int lengthstr;
 
 
@@ -67,7 +63,7 @@ int aState;
 int aLastState;
 uint8_t sensorValA0_prev;
 
-String files[10];
+String files[1];
 
 
 
@@ -483,16 +479,16 @@ void gcodereader() {
 }
 
 
-int rem(double remainder, int whole) {
-  int wholelen = String(whole).length();
-  int result = 0;
+int rem(double remainder, short whole) {
+  short wholelen = String(whole).length();
+  short result = 0;
   String rema = String(remainder);
-  int lengthrema = rema.length();
+  short lengthrema = rema.length();
   String resultstring = "";
 
 
 
-  for (int i = 0; i < lengthrema; i++) {
+  for (short i = 0; i < lengthrema; i++) {
     while (i < wholelen) {
       i++;
     }
