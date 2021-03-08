@@ -88,8 +88,8 @@ void receiveEvent(int howmany) {
     yval = y.toDouble();
     lukaval = 1;
     String y = "";
-    Serial.println("Y");
-    Serial.println(yval);
+    Serial.println("Y New Degree");
+    //Serial.println(yval);
     xValue = xval;
     yValue = yval;
     //Alexanders Code...
