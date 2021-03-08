@@ -35,7 +35,7 @@ File root;
 boolean recieveval = false;
 String gcodefile = "gcode.txt";
 
-const int delaytime = 4000; // important
+const int delaytime = 1000; // important
 
 double g = 0;
 String gval = "";
@@ -72,9 +72,7 @@ void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(9600);
-  while (!Serial) {
-    ; //Wait for serial monitor  to be opened
-  }
+  delay(10);
 
 
 
