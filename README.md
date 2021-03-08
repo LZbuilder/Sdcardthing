@@ -1,2 +1,2 @@
 # Sdcardthing
-Idk I need to work out how to read from a txt file of gcode
+So basically this is my testing bench for Arduino; Reading gcode from a SD card on Arduino with and lcd and rotary endcoder
