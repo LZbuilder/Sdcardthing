@@ -455,9 +455,10 @@ void gcodereader() {
                     Wire.write(byte(yremainder));
                     delay(1);
                     Wire.endTransmission();
+                    
                     delay(delaytime);
                     // 
-
+                    
 
 
                   }
