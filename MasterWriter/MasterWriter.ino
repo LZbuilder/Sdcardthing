@@ -317,12 +317,14 @@ void maingui() {
         Serial.println("SettingsGui");
         //SettingGui
         break;
+        
 
       } else if (int(counter) == 2) {
         //Clicked About
         Serial.println("AboutGui");
         //AboutGui
         break;
+       
 
       }
     }
@@ -332,7 +334,6 @@ void maingui() {
 
   }
 }
-
 
 void gcodefinder() {
 
