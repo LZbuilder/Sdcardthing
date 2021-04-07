@@ -7,14 +7,13 @@
     4. SCK - 13
     5. MISO - pin 12
 
-   Instructions for lcd:
+   Instructions for lcd?
     (RS, E, D4, D5, D6, D7)
     (8, 9, 4, 5, 6, 7)
    Test and see if the LCD works!! with your own code!
 
-   Instructions for Rotary Encoder:
-     
-   
+   Instructions for Rotary Encoder!!
+    We need three digital pins for this
 
 */
 
@@ -192,7 +191,6 @@ void maingui() {
     {
       Serial.println("Buttonpressed");
       if (int(counter) == 0) {
-        sensorValA0_prev = digitalRead(swre);
         //Clicked Print
         Serial.println("PrintGui");
 
@@ -201,7 +199,7 @@ void maingui() {
         delay(1);
         lcd.println("Loading...      ");
         gcodefinder();
-        delay(100);
+        delay(300);
         while (true) {
           delay(10);
           counter = 0;
@@ -317,14 +315,12 @@ void maingui() {
         Serial.println("SettingsGui");
         //SettingGui
         break;
-        
 
       } else if (int(counter) == 2) {
         //Clicked About
         Serial.println("AboutGui");
         //AboutGui
         break;
-       
 
       }
     }
@@ -334,6 +330,7 @@ void maingui() {
 
   }
 }
+
 
 void gcodefinder() {
 
@@ -458,10 +455,9 @@ void gcodereader() {
                     Wire.write(byte(yremainder));
                     delay(1);
                     Wire.endTransmission();
-                    
                     delay(delaytime);
-                    // 
-                    
+                    // This is where I could do lcd stuff.
+
 
 
                   }
