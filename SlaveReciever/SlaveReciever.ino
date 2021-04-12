@@ -50,14 +50,10 @@ void setup() {
 
   servoy.write(0);
   servoCurrentpos = 0;
-
-
-
 }
 
-void loop() {
+void loop() {}
 
-}
 void receiveEvent(int howmany) {
   Serial.println("Recieved");
   int integer = Wire.read();
