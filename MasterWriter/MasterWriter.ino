@@ -43,7 +43,7 @@ String xval = "";
 String yval = "";
 
 
-double x = 0; //end result of what comes after x
+double x = 0; //end result of what comes after x 
 double y = 0; //end result of what comes after y
 byte xwholenumber = 0;
 byte xremainder;
