@@ -14,7 +14,9 @@
 
    Instructions for Rotary Encoder!!
     We need three digital pins for this
-
+    1. The Switch on The Rotary encoder connected to Anolag pin 0
+    2. CLK goes to Pin 2
+    3. DT goes to Pin 3
 */
 
 #define swre A0 // The Switch on The Rotary encoder connected to Anolag pin 0
