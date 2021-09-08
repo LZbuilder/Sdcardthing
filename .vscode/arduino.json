@@ -1,5 +1,5 @@
 {
+    "configuration": "cpu=atmega2560",
     "board": "arduino:avr:mega",
-    "sketch": "MasterWriter\\MasterWriter.ino",
-    "configuration": "cpu=atmega2560"
+    "sketch": "SlaveReciever\\SlaveReciever.ino"
 }
