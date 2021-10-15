@@ -1,5 +1,6 @@
 {
     "configuration": "cpu=atmega2560",
     "board": "arduino:avr:mega",
-    "sketch": "SlaveReciever\\SlaveReciever.ino"
+    "sketch": "MasterWriter\\MasterWriter.ino",
+    "port": "COM4"
 }
