@@ -120,3 +120,33 @@ void gcodereader() {
     }
   }
 }
+int rem(double remainder, short whole) {
+  short wholelen = String(whole).length();
+  short result = 0;
+  String rema = String(remainder);
+  short lengthrema = rema.length();
+  String resultstring = "";
+
+
+
+  for (short i = 0; i < lengthrema; i++) {
+    while (i < wholelen) {
+      i++;
+    }
+    if (rema[i] == "." || isDigit(rema[i])) {
+
+      if (isDigit(rema[i])) {
+        while (isDigit(rema[i]) || i < lengthrema) {
+          resultstring += rema[i];
+          i++;
+        }
+
+        result = resultstring.toInt();
+      }
+    }
+  }
+
+  //result = 2; //For degbugging
+
+  return result;
+}
