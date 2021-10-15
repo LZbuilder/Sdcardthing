@@ -17,6 +17,10 @@
     1. The Switch on The Rotary encoder connected to Anolag pin 0
     2. CLK goes to Pin 2
     3. DT goes to Pin 3
+   Instuctions for Slave and Master Arduino:
+    1. Connect the A4 pin of Master to A4 pin on Slave
+    2. Connect the A5 pin of Master to A5 pin on Slave
+    3. Connect the GND pin of Master to GND pin on Slave
 */
 
 #define swre A0 // The Switch on The Rotary encoder connected to Anolag pin 0
@@ -218,7 +222,6 @@ void maingui() {
           delay(1);
           lcd.println(files[0]);
           delay(1);
-          lcd.setCursor(15, 1);
           delay(1);
 
           while (true) { // While on the Print screen you do this...
