@@ -69,7 +69,8 @@ void gcodereader() {
               singleletterint = byte(Serial.read()); //gets a byte
               singleletterchar = char(singleletterint);
             }
-            //Serial.println(gval);
+            Serial.println("Gval:");
+            Serial.println(gval);
             g = gval.toDouble();
 
             if (g == 1) {
@@ -94,12 +95,14 @@ void gcodereader() {
                 delay(1);
                 //.beginTransmission(4); // transmit to device #4
                 delay(1);
-                //.write(byte(xwholenumber));
+                Serial.println("XWhole");
+                Serial.println(xwholenumber);
                 delay(1);
                 //.endTransmission();
                 delay(50);
                 //.beginTransmission(4);
-                //.write(byte(xremainder));
+                Serial.println("Xremainder");
+                Serial.println(xremainder);
                 //.endTransmission();    // ends the transmission
                 delay(delaytime);
 
@@ -123,12 +126,14 @@ void gcodereader() {
                     delay(1);
                     //.beginTransmission(4); // transmit to device #4
                     delay(1);
-                    //.write(byte(ywholenumber));
+                    Serial.println("ywholenumber");
+                    Serial.println(ywholenumber);
                     delay(1);
                     //.endTransmission();
                     delay(50);
                     //.beginTransmission(4);
-                    //.write(byte(yremainder));
+                    Serial.println("yremainder");
+                    Serial.println(yremainder);
                     delay(1);
                     //.endTransmission();
                     delay(delaytime);
