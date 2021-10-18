@@ -1,11 +1,42 @@
-void setup() {
-  // put your setup code here, to run once:
+String inputString = "";         // a String to hold incoming data
+bool stringComplete = false;  // whether the string is complete
 
+boolean recieveval = false;
+
+const int delaytime = 1000; // important
+
+double g = 0;
+String gval = "";
+String xval = "";
+String yval = "";
+
+
+double x = 0; //end result of what comes after x 
+double y = 0; //end result of what comes after y
+byte xwholenumber = 0;
+byte xremainder;
+byte ywholenumber;
+byte yremainder;
+
+
+char singleletterchar; int singleletterint;
+String multiple[] = {};
+short i;
+int lengthstr;
+
+
+void setup() {
+  // initialize serial:
+  Serial.begin(9600);
+  // reserve 200 bytes for the inputString:
+  inputString.reserve(200);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  if (Serial.available()){
+    gcodereader();
+  }
 }
 
 void gcodereader() {
@@ -13,29 +44,29 @@ void gcodereader() {
 
 
   //Before we do ANY Of the code below we must find what file we want until we press the switch!
-  myFile = SD.open(gcodefile);
+  inputString = byte(Serial.read());
 
-  if (myFile) {
-    Serial.println("Opening " + gcodefile);
+  if (inputString) {
+    Serial.println("Opening ");
 
     // read from the file until there's nothing else in it:
-    while (myFile.available()) {
+    while (Serial.available()) {
       recieveval = false;
       gval = "";
       xval = "";
       yval = "";
-      singleletterint = myFile.read(); //gets a byte
+      singleletterint = byte(Serial.read()); //gets a byte
       singleletterchar = char(singleletterint); //makes byte to char
 
       switch (singleletterchar) {
         case 'G':
-          singleletterint = myFile.read(); //gets a byte
+          singleletterint = byte(Serial.read()); //gets a byte
           singleletterchar = char(singleletterint);
 
           if (isDigit(singleletterchar)) {
             while (isDigit(singleletterchar)) {
               gval += singleletterchar;
-              singleletterint = myFile.read(); //gets a byte
+              singleletterint = byte(Serial.read()); //gets a byte
               singleletterchar = char(singleletterint);
             }
             //Serial.println(gval);
@@ -43,15 +74,15 @@ void gcodereader() {
 
             if (g == 1) {
               while (singleletterchar != 'X') {
-                singleletterint = myFile.read(); //gets a byte
+                singleletterint = byte(Serial.read()); //gets a byte
                 singleletterchar = char(singleletterint);
               }
-              singleletterint = myFile.read(); //gets a byte
+              singleletterint = byte(Serial.read()); //gets a byte
               singleletterchar = char(singleletterint);
               if (isDigit(singleletterchar)) {
                 while (isDigit(singleletterchar) || singleletterchar == '.') {
                   xval += singleletterchar;
-                  singleletterint = myFile.read(); //gets a byte
+                  singleletterint = byte(Serial.read()); //gets a byte
                   singleletterchar = char(singleletterint);
                 }
                 //Serial.println(xval);
@@ -61,27 +92,27 @@ void gcodereader() {
                 delay(1);
                 xremainder = rem(x, xwholenumber); // I made a function to find what is after the decimal point!
                 delay(1);
-                Wire.beginTransmission(4); // transmit to device #4
+                //.beginTransmission(4); // transmit to device #4
                 delay(1);
-                Wire.write(byte(xwholenumber));
+                //.write(byte(xwholenumber));
                 delay(1);
-                Wire.endTransmission();
+                //.endTransmission();
                 delay(50);
-                Wire.beginTransmission(4);
-                Wire.write(byte(xremainder));
-                Wire.endTransmission();    // ends the transmission
+                //.beginTransmission(4);
+                //.write(byte(xremainder));
+                //.endTransmission();    // ends the transmission
                 delay(delaytime);
 
-                singleletterint = myFile.read(); //gets a byte
+                singleletterint = byte(Serial.read()); //gets a byte
                 singleletterchar = char(singleletterint);
 
                 if (singleletterchar == 'Y') {
-                  singleletterint = myFile.read(); //gets a byte
+                  singleletterint = byte(Serial.read()); //gets a byte
                   singleletterchar = char(singleletterint);
                   if (isDigit(singleletterchar)) {
                     while (isDigit(singleletterchar) || singleletterchar == '.') {
                       yval += singleletterchar;
-                      singleletterint = myFile.read(); //gets a byte
+                      singleletterint = byte(Serial.read());
                       singleletterchar = char(singleletterint);
                     }
                     //Serial.println(yval);
@@ -90,16 +121,16 @@ void gcodereader() {
                     yremainder = rem(y, ywholenumber); // I made a function to find what is after the decimal point!
                     Serial.println(y);
                     delay(1);
-                    Wire.beginTransmission(4); // transmit to device #4
+                    //.beginTransmission(4); // transmit to device #4
                     delay(1);
-                    Wire.write(byte(ywholenumber));
+                    //.write(byte(ywholenumber));
                     delay(1);
-                    Wire.endTransmission();
+                    //.endTransmission();
                     delay(50);
-                    Wire.beginTransmission(4);
-                    Wire.write(byte(yremainder));
+                    //.beginTransmission(4);
+                    //.write(byte(yremainder));
                     delay(1);
-                    Wire.endTransmission();
+                    //.endTransmission();
                     delay(delaytime);
                     // This is where I could do lcd stuff.
 
