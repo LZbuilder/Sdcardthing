@@ -12,6 +12,6 @@ void loop() {
 
     // say what you got:
     Serial.print("I received: ");
-    Serial.println(incomingByte, DEC);
+    Serial.println(char(incomingByte));
   }
 }

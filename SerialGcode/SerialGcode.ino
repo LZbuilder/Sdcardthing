@@ -44,48 +44,47 @@ void gcodereader() {
 
 
   //Before we do ANY Of the code below we must find what file we want until we press the switch!
-  inputString = byte(Serial.read());
 
-  if (inputString) {
+  
     Serial.println("Opening ");
 
     // read from the file until there's nothing else in it:
     while (Serial.available()) {
-      recieveval = false;
       gval = "";
       xval = "";
       yval = "";
-      singleletterint = byte(Serial.read()); //gets a byte
-      singleletterchar = char(singleletterint); //makes byte to char
+      Serial.println("We Made it to the while loop");
+      singleletterchar = char(Serial.read()); //makes byte to char
 
       switch (singleletterchar) {
         case 'G':
-          singleletterint = byte(Serial.read()); //gets a byte
-          singleletterchar = char(singleletterint);
+          
+         singleletterchar = char(Serial.read());
 
           if (isDigit(singleletterchar)) {
             while (isDigit(singleletterchar)) {
               gval += singleletterchar;
-              singleletterint = byte(Serial.read()); //gets a byte
-              singleletterchar = char(singleletterint);
+              
+             singleletterchar = char(Serial.read());
             }
             Serial.println("Gval:");
             Serial.println(gval);
             g = gval.toDouble();
-
+            delay(1);
             if (g == 1) {
               while (singleletterchar != 'X') {
-                singleletterint = byte(Serial.read()); //gets a byte
-                singleletterchar = char(singleletterint);
+                
+               singleletterchar = char(Serial.read());
               }
-              singleletterint = byte(Serial.read()); //gets a byte
-              singleletterchar = char(singleletterint);
+              delay(1);
+             singleletterchar = char(Serial.read());
               if (isDigit(singleletterchar)) {
                 while (isDigit(singleletterchar) || singleletterchar == '.') {
                   xval += singleletterchar;
-                  singleletterint = byte(Serial.read()); //gets a byte
-                  singleletterchar = char(singleletterint);
+                  
+                 singleletterchar = char(Serial.read());
                 }
+                delay(1);
                 //Serial.println(xval);
                 x = xval.toDouble();
                 Serial.println(x);
@@ -106,17 +105,17 @@ void gcodereader() {
                 //.endTransmission();    // ends the transmission
                 delay(delaytime);
 
-                singleletterint = byte(Serial.read()); //gets a byte
-                singleletterchar = char(singleletterint);
+                
+               singleletterchar = char(Serial.read());
 
                 if (singleletterchar == 'Y') {
-                  singleletterint = byte(Serial.read()); //gets a byte
-                  singleletterchar = char(singleletterint);
+                  
+                 singleletterchar = char(Serial.read());
                   if (isDigit(singleletterchar)) {
                     while (isDigit(singleletterchar) || singleletterchar == '.') {
                       yval += singleletterchar;
                       singleletterint = byte(Serial.read());
-                      singleletterchar = char(singleletterint);
+                     singleletterchar = char(Serial.read());
                     }
                     //Serial.println(yval);
                     y = yval.toDouble();
@@ -154,7 +153,7 @@ void gcodereader() {
           }
       }
     }
-  }
+  
 }
 int rem(double remainder, short whole) {
   short wholelen = String(whole).length();
