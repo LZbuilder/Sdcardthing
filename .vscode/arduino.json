@@ -1,6 +1,5 @@
 {
-    "configuration": "cpu=atmega2560",
-    "board": "arduino:avr:mega",
-    "sketch": "SerialGcode\\SerialGcode.ino",
-    "port": "COM4"
+    "board": "arduino:avr:uno",
+    "sketch": "MasterWriter\\MasterWriter.ino",
+    "port": "COM6"
 }

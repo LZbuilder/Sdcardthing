@@ -1,6 +1,5 @@
 #include <Wire.h>
 
-
 int lukaval = 1;
 boolean doingcode = false;
 double xval = 0;
@@ -14,9 +13,9 @@ String y = "";
 #include <Servo.h>
 Servo servoy;
 
-int Bedheight = 60;//the height of the centerpoint of the rotating on the Y servo from the print bed
-double xValue = 20;// the numbers followed after G1  (example G1 X___ Y)
-double yValue = 20;// the numbers followed after G1 X (example G1 X Y___)
+int Bedheight = 60; //the height of the centerpoint of the rotating on the Y servo from the print bed
+double xValue = 20; // the numbers followed after G1  (example G1 X___ Y)
+double yValue = 20; // the numbers followed after G1 X (example G1 X Y___)
 int time = 1;
 
 //  ↑ varibles used by evreything
@@ -30,7 +29,7 @@ double stepperCurrentpos = 0;
 
 //  ↑ varibles used by the stepper motors
 
-double servoNewsdeg = 0 ;// the new degree for the servo,formaly called yD
+double servoNewsdeg = 0; // the new degree for the servo,formaly called yD
 double servoCalculateddeg = 0;
 double servoPreviousdeg = 0;
 double servoCurrentpos = 0;
@@ -38,7 +37,8 @@ double servoCurrentpos = 0;
 
 Stepper Stepper1(stepsPerRevolution, 7, 5, 6, 8);
 
-void setup() {
+void setup()
+{
   Wire.begin(4);                // join i2c bus with address #4
   Wire.onReceive(receiveEvent); // register event
   Serial.begin(9600);
@@ -54,7 +54,8 @@ void setup() {
 
 void loop() {}
 
-void receiveEvent(int howmany) {
+void receiveEvent(int howmany)
+{
   Serial.println("Recieved");
   int integer = Wire.read();
   if (lukaval == 1)
@@ -90,8 +91,8 @@ void receiveEvent(int howmany) {
     yValue = yval;
     //Alexanders Code...
     double stepperNewdeg = ((atan(xValue / yValue) * 180 / 3.14159265) + 0); // caclulate how much the stepper neews t move
-    double servoNewdeg = (atan(Bedheight / yValue) * 180 / 3.14159265); // caclulate how much the servo needs to move
-    stepperCalculateddeg = stepperNewdeg - stepperPreviousdeg; // how far the stepper needs to move in degrees
+    double servoNewdeg = (atan(Bedheight / yValue) * 180 / 3.14159265);      // caclulate how much the servo needs to move
+    stepperCalculateddeg = stepperNewdeg - stepperPreviousdeg;               // how far the stepper needs to move in degrees
     servoCalculateddeg = servoNewdeg - servoPreviousdeg;
     Serial.println(servoNewdeg);
 
@@ -101,24 +102,16 @@ void receiveEvent(int howmany) {
     //the stepper rotates counterclockwise and the servo rotates counterclockwise       stepperCalculateddeg<0 & servoCalculateddeg<servoPreviousdeg
     //the stepper rotates counterclockwise and the servo rotates clockwise              stepperCalculateddeg<0 & servoCalculateddeg>servoPreviousdeg
 
-    if (stepperCalculateddeg > 0 && servoCalculateddeg > servoPreviousdeg) { // the calculated value for the stepper is more than 0 go forwards,the calculated value for the stepper is more than the last value make the angle more
+    if (stepperCalculateddeg > 0 && servoCalculateddeg > servoPreviousdeg)
+    { // the calculated value for the stepper is more than 0 go forwards,the calculated value for the stepper is more than the last value make the angle more
       Serial.println("stepper moving counter clock wise");
       Serial.println("degree of the servo should eb getting higher");
       // speed = distance/time
       // do the formula so the stepper arrives to stepperCalculateddeg the same time the servo arrives to servoCalculateddeg
-
     }
     servoy.write(servoNewdeg);
-      
+
     stepperPreviousdeg = stepperNewdeg; // sets the steppers previous degre to the last degre used
-    servoPreviousdeg = servoNewdeg; // does the same but for the servo
-
+    servoPreviousdeg = servoNewdeg;     // does the same but for the servo
   }
-
-
-
-
-
-
-
 }
