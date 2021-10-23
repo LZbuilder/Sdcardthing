@@ -115,27 +115,29 @@ void maingui()
 
   lcd.setCursor(15, 1);
 
-
   lcd.write(byte(1)); // the down arrow
   boolean whiletrue = true;
   while (true)
   { // While on the main screen you do this...
     readInput = "";
-    if (Serial.available()){
-       
-       readInput = Serial.readString();
-       Serial.println(readInput);
-       
-       if (readInput == "Sugma"){
-         Serial.println("Enter your file name:");
-         while (!Serial.available()){
-           ;
-         }
-         readInput = Serial.readString();
-         Serial.println("readInput = " + readInput);
-         gcodereader(readInput); // Opens the File name on SD CARD MODULE
-       }
-       readInput = "";
+    if (Serial.available())
+    {
+
+      readInput = Serial.readString();
+      Serial.println(readInput);
+
+      if (readInput == "Sugma")
+      {
+        Serial.println("Enter your file name:");
+        while (!Serial.available())
+        {
+          ;
+        }
+        readInput = Serial.readString();
+        Serial.println("readInput = " + readInput);
+        gcodereader(readInput); // Opens the File name on SD CARD MODULE
+      }
+      readInput = "";
     }
     
     aState = digitalRead(outputA); // Reads the "current" state of the outputA
@@ -410,113 +412,146 @@ void gcodereader(String gcodefile)
     }
     myFile.close();
   }
-  else {
+  else
+  {
     Serial.println("myFile not available");
   }
 }
 
 void gcodeSplitter(char letter)
 { // Trying to make this function find what is after G1 or G0 and then if find
-  switch (letter)
+  if (myFile.available())
   {
-  case 'G':
-    singleletterchar = char(myFile.read());
-
-    val = calDigits(singleletterchar); // My function that finds a String value of what comes after G
-    Serial.println("Gval: " + String(val));
-
-    endresult = val.toInt();
-
-    if (endresult == 1)
+    switch (letter)
     {
-      while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z')
+    case 'G':
+      singleletterchar = char(myFile.read());
+
+      val = calDigits(singleletterchar); // My function that finds a String value of what comes after G
+      Serial.println("Gval: " + String(val));
+
+      endresult = val.toInt();
+
+      if (endresult == 1)
+      {
+        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E' && singleletterchar != 'F')
+        {
+
+          singleletterchar = char(myFile.read());
+        }
+
+        sendData('G', 1, 0);
+        gcodeSplitter(singleletterchar);
+      }
+      else if (endresult == 0)
+      {
+        Serial.println("YoU dUmB fUcKeR");
+        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E' && singleletterchar != 'F')
+        {
+
+          singleletterchar = char(myFile.read());
+        }
+
+        sendData('G', 0, 0);
+        gcodeSplitter(singleletterchar);
+      }
+      else
+      {
+        Serial.println("Case G but unknow digit: " + String(singleletterchar));
+        gcodeSplitter(singleletterchar);
+      }
+      break;
+    case 'X':
+      singleletterchar = char(myFile.read());
+      if (isDigit(singleletterchar))
       {
 
-        singleletterchar = char(myFile.read());
-      }
+        val = calDigits(singleletterchar);
 
-      sendData('G', 1, 0);
-      gcodeSplitter(singleletterchar);
-    }
-    else if (endresult == 0)
-    {
-      Serial.println("YoU dUmB fUcKeR");
-      while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z')
+        //Serial.println(xval);
+        endresult = val.toDouble();
+        Serial.println("X Entire Number: " + String(endresult));
+        wholenumber = int(endresult); // or you can just send it over a byte
+
+        remainder = rem(endresult, wholenumber); // I made a function to find what is after the decimal point!
+
+        Serial.println("xWhole: " + String(wholenumber));
+
+        Serial.println("xRemainder: " + String(remainder));
+
+        sendData('X', wholenumber, remainder);
+        gcodeSplitter(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
+      }
+      else
+      {
+        Serial.println("Case X but no digit: " + String(singleletterchar));
+        gcodeSplitter(singleletterchar);
+      }
+      break;
+    case 'Y':
+      singleletterchar = char(myFile.read());
+      if (isDigit(singleletterchar))
       {
 
-        singleletterchar = char(myFile.read());
+        val = calDigits(singleletterchar);
+
+        //Serial.println(xval);
+        endresult = val.toDouble();
+        Serial.println("Y Entire Number: " + String(endresult));
+        wholenumber = int(endresult); // or you can just send it over a byte
+
+        remainder = rem(endresult, wholenumber); // I made a function to find what is after the decimal point!
+
+        Serial.println("yWhole: " + String(wholenumber));
+
+        Serial.println("yRemainder: " + String(remainder));
+
+        sendData('Y', wholenumber, remainder);
+        gcodeSplitter(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
       }
+      else
+      {
+        Serial.println("Case Y but no digit: " + String(singleletterchar));
+        gcodeSplitter(singleletterchar);
+      }
+      break;
+    case 'Z':
+      singleletterchar = char(myFile.read());
+      if (isDigit(singleletterchar))
+      {
 
-      sendData('G', 0, 0);
-      gcodeSplitter(singleletterchar);
+        val = calDigits(singleletterchar);
+
+        //Serial.println(xval);
+        endresult = val.toDouble();
+        Serial.println("Z Entire Number: " + String(endresult));
+        wholenumber = int(endresult); // or you can just send it over a byte
+
+        remainder = rem(endresult, wholenumber); // I made a function to find what is after the decimal point!
+
+        Serial.println("zWhole: " + String(wholenumber));
+
+        Serial.println("zRemainder: " + String(remainder));
+
+        sendData('Z', wholenumber, remainder);
+        gcodeSplitter(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
+      }
+      else
+      {
+        Serial.println("Case Z but no digit: " + String(singleletterchar));
+        gcodeSplitter(singleletterchar);
+      }
+      break;
+    default:
+
+      Serial.println("Default Executed: " + String(singleletterchar));
+      gcodeSplitter(singleletterchar = char(myFile.read()));
+      break;
     }
-    break;
-  case 'X':
-    singleletterchar = char(myFile.read());
-    if (isDigit(singleletterchar))
-    {
-
-      val = calDigits(singleletterchar);
-
-      //Serial.println(xval);
-      endresult = val.toDouble();
-      Serial.println("X Entire Number: " + String(endresult));
-      wholenumber = int(endresult); // or you can just send it over a byte
-
-      remainder = rem(endresult, wholenumber); // I made a function to find what is after the decimal point!
-
-      Serial.println("xWhole: " + String(wholenumber));
-
-      Serial.println("xRemainder: " + String(remainder));
-
-      sendData('X', wholenumber, remainder);
-      gcodeSplitter(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
-    }
-    break;
-  case 'Y':
-    singleletterchar = char(myFile.read());
-    if (isDigit(singleletterchar))
-    {
-
-      val = calDigits(singleletterchar);
-
-      //Serial.println(xval);
-      endresult = val.toDouble();
-      Serial.println("Y Entire Number: " + String(endresult));
-      wholenumber = int(endresult); // or you can just send it over a byte
-
-      remainder = rem(endresult, wholenumber); // I made a function to find what is after the decimal point!
-
-      Serial.println("yWhole: " + String(wholenumber));
-
-      Serial.println("yRemainder: " + String(remainder));
-
-      sendData('Y', wholenumber, remainder);
-      gcodeSplitter(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
-    }
-    break;
-  case 'Z':
-    singleletterchar = char(myFile.read());
-    if (isDigit(singleletterchar))
-    {
-
-      val = calDigits(singleletterchar);
-
-      //Serial.println(xval);
-      endresult = val.toDouble();
-      Serial.println("Z Entire Number: " + String(endresult));
-      wholenumber = int(endresult); // or you can just send it over a byte
-
-      remainder = rem(endresult, wholenumber); // I made a function to find what is after the decimal point!
-
-      Serial.println("zWhole: " + String(wholenumber));
-
-      Serial.println("zRemainder: " + String(remainder));
-
-      sendData('Z', wholenumber, remainder);
-      gcodeSplitter(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
-    }
-    break;
+  }
+  else
+  {
+    Serial.println("Finished!");
   }
 }
 

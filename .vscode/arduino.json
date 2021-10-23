@@ -1,5 +1,5 @@
 {
     "board": "arduino:avr:uno",
-    "sketch": "MasterWriter\\MasterWriter.ino",
+    "sketch": "SerialGcode\\SerialGcode.ino",
     "port": "COM6"
 }
