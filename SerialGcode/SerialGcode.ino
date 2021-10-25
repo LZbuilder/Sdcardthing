@@ -19,6 +19,7 @@ double endresult = 0;
 byte wholenumber;
 byte remainder;
 
+byte tester;
 char singleletterchar;
 short i;
 
@@ -286,7 +287,10 @@ String calDigitsSD(char thisDigit)
     {
       mystring += thisDigit;
       Serial.println(mystring);
-      thisDigit = char(myFile.read());
+      tester = myFile.read();
+      Serial.println("Tester Value: ");
+      Serial.print(tester);
+      thisDigit = char(tester);
       Serial.println("thisDigit: " + thisDigit);
     }
     Serial.println("mystring Values");
