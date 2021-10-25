@@ -288,8 +288,10 @@ String calDigitsSD(char thisDigit)
     {
       Serial.println(mystring);
       tester = myFile.read();
-      Serial.println("Tester Value: ");
+      Serial.println("Tester Byte Value: ");
       Serial.print(tester);
+      Serial.print(" Char Value");
+      Serial.print(char(tester));
       thisDigit = char(tester);
       Serial.println("thisDigit: " + thisDigit);
       mystring += thisDigit;
