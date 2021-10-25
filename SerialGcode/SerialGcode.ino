@@ -49,7 +49,7 @@ void loop()
   // put your main code here, to run repeatedly:
   if (Serial.available())
   {
-    gcodereader();
+    //gcodereader();
     readInput = "";
 
     readInput = Serial.readString();
@@ -238,7 +238,7 @@ void gcodeSplitter(char letter)
         gcodeSplitter(singleletterchar = Serial.read());
       }
       break;
-      case ' ':
+    case ' ':
       Serial.println("Case Was blank or space");
       gcodeSplitter(singleletterchar = char(Serial.read()));
       break;
@@ -257,12 +257,12 @@ void gcodeSplitter(char letter)
 
 String calDigits(char thisDigit)
 {
-  String mystring = "";
+  mystring = "";
   if (isDigit(thisDigit))
   {
     while (isDigit(thisDigit) || thisDigit == '.')
     {
-      mystring += String(thisDigit);
+      mystring += thisDigit;
       Serial.println(mystring);
       thisDigit = char(Serial.read());
       Serial.println(mystring);
@@ -270,7 +270,7 @@ String calDigits(char thisDigit)
   }
   else
   {
-    Serial.println("CalDigits error: " + String(mystring));
+    Serial.println("CalDigits error: " + mystring);
   }
   Serial.println(String(mystring));
   return String(mystring);
@@ -281,20 +281,25 @@ String calDigitsSD(char thisDigit)
   mystring = "";
   if (isDigit(thisDigit))
   {
+
     while (isDigit(thisDigit) || thisDigit == '.')
     {
-      mystring += String(thisDigit);
+      mystring += thisDigit;
       Serial.println(mystring);
       thisDigit = char(myFile.read());
-      Serial.println(mystring);
+      Serial.println("thisDigit: " + thisDigit);
     }
+    Serial.println("mystring Values");
+    Serial.println(String(mystring));
+    Serial.println(mystring);
+    return mystring;
   }
   else
   {
-    Serial.println("CalDigits error: " + String(mystring));
+    Serial.println("CalDigits error: " + mystring);
+    return;
   }
-  Serial.println(String(mystring));
-  return String(mystring);
+  return;
 }
 
 int rem(double remainder, short whole)
@@ -369,17 +374,18 @@ void gcodeSplitterSD(char letter)
     switch (letter)
     {
     case 'G':
+      singleletterchar = ' ';
       singleletterchar = char(myFile.read());
 
       val = calDigitsSD(singleletterchar); // My function that finds a String value of what comes after G
       Serial.println("Gval:");
-      Serial.println(String(val));
+      Serial.println(val);
 
       endresult = val.toInt();
 
       if (endresult == 1)
       {
-        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E' && singleletterchar != 'F')
+        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E')
         {
           delay(1);
           Serial.println("In G1 While Loop: ");
@@ -394,7 +400,7 @@ void gcodeSplitterSD(char letter)
       else if (endresult == 0)
       {
         Serial.println("YoU dUmB fUcKeR");
-        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E' && singleletterchar != 'F')
+        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E')
         {
           delay(1);
           Serial.println("In G0 While Loop: " + String(singleletterchar));
@@ -412,15 +418,17 @@ void gcodeSplitterSD(char letter)
       }
       break;
     case 'X':
+      singleletterchar = ' ';
       Serial.println(String(singleletterchar));
       singleletterchar = char(myFile.read());
-      Serial.println(String(singleletterchar));
+      Serial.println("Writing singleletterchar:");
+      Serial.println(singleletterchar);
       if (isDigit(singleletterchar))
       {
 
         val = calDigitsSD(singleletterchar);
 
-        Serial.println(String(val));
+        Serial.println(val);
         endresult = val.toDouble();
         Serial.println(String(endresult));
         Serial.println("X Entire Number: " + String(endresult));
@@ -442,6 +450,7 @@ void gcodeSplitterSD(char letter)
       }
       break;
     case 'Y':
+      singleletterchar = ' ';
       singleletterchar = char(myFile.read());
       if (isDigit(singleletterchar))
       {
@@ -469,6 +478,7 @@ void gcodeSplitterSD(char letter)
       }
       break;
     case 'Z':
+      singleletterchar = ' ';
       singleletterchar = char(myFile.read());
       if (isDigit(singleletterchar))
       {
@@ -499,6 +509,7 @@ void gcodeSplitterSD(char letter)
 
       Serial.println("Default Executed: ");
       Serial.println(String(singleletterchar));
+      singleletterchar = ' ';
       gcodeSplitterSD(singleletterchar = char(myFile.read()));
       break;
     }
