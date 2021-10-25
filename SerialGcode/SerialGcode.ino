@@ -13,7 +13,7 @@ float gamma = acos((sq(lOne) + sq(c) - sq(lTwo)) / (2 * lOne * c));
 float beta = 180 - (2 * gamma);
 
 String val = "";
-
+String mystring = "";
 double endresult = 0;
 
 byte wholenumber;
@@ -49,7 +49,7 @@ void loop()
   // put your main code here, to run repeatedly:
   if (Serial.available())
   {
-    //gcodereader();
+    gcodereader();
     readInput = "";
 
     readInput = Serial.readString();
@@ -138,7 +138,7 @@ void gcodeSplitter(char letter)
         if (xpos >= 0 && ypos >= 0)
         {
           //then do alexanders code
-         /* Serial.println("Doing Alexanders Code");
+          /* Serial.println("Doing Alexanders Code");
           c = sqrt(sq(xpos) + sq(ypos));
           gamma = acos((sq(lOne) + sq(c) - sq(lTwo)) / (2 * lOne * c));
           beta = 180 - (2 * gamma);
@@ -238,6 +238,10 @@ void gcodeSplitter(char letter)
         gcodeSplitter(singleletterchar = Serial.read());
       }
       break;
+      case ' ':
+      Serial.println("Case Was blank or space");
+      gcodeSplitter(singleletterchar = char(Serial.read()));
+      break;
     default:
       Serial.println("Default Executed: ");
       Serial.println(String(singleletterchar));
@@ -258,8 +262,10 @@ String calDigits(char thisDigit)
   {
     while (isDigit(thisDigit) || thisDigit == '.')
     {
-      mystring += thisDigit;
+      mystring += String(thisDigit);
+      Serial.println(mystring);
       thisDigit = char(Serial.read());
+      Serial.println(mystring);
     }
   }
   else
@@ -269,15 +275,18 @@ String calDigits(char thisDigit)
   Serial.println(String(mystring));
   return String(mystring);
 }
+
 String calDigitsSD(char thisDigit)
 {
-  String mystring = "";
+  mystring = "";
   if (isDigit(thisDigit))
   {
     while (isDigit(thisDigit) || thisDigit == '.')
     {
-      mystring += thisDigit;
+      mystring += String(thisDigit);
+      Serial.println(mystring);
       thisDigit = char(myFile.read());
+      Serial.println(mystring);
     }
   }
   else
@@ -408,7 +417,7 @@ void gcodeSplitterSD(char letter)
       Serial.println(String(singleletterchar));
       if (isDigit(singleletterchar))
       {
-        
+
         val = calDigitsSD(singleletterchar);
 
         Serial.println(String(val));
