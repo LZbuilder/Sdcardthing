@@ -19,6 +19,7 @@ double endresult = 0;
 byte wholenumber;
 byte remainder;
 String mystring = "";
+byte tester;
 char singleletterchar;
 short i;
 
@@ -272,14 +273,21 @@ String calDigits(char thisDigit)
 String calDigitsSD(char thisDigit)
 {
   mystring = "";
+  
   if (isDigit(thisDigit))
   {
-
+    mystring += thisDigit;
     while (isDigit(thisDigit) || thisDigit == '.')
     {
+      Serial.println(mystring);
+      tester = myFile.read();
+      Serial.println("Tester Byte Value: ");
+      Serial.print(tester);
+      Serial.print(" Char Value");
+      Serial.print(char(tester));
+      thisDigit = char(tester);
+      Serial.println("thisDigit: " + thisDigit);
       mystring += thisDigit;
-      thisDigit = char(myFile.read());
-      Serial.println("mystring equal: " + mystring);
     }
     Serial.println("mystring Values");
     // Serial.println(String(mystring));
