@@ -280,18 +280,19 @@ String calDigits(char thisDigit)
 String calDigitsSD(char thisDigit)
 {
   mystring = "";
+  
   if (isDigit(thisDigit))
   {
-
+    mystring += thisDigit;
     while (isDigit(thisDigit) || thisDigit == '.')
     {
-      mystring += thisDigit;
       Serial.println(mystring);
       tester = myFile.read();
       Serial.println("Tester Value: ");
       Serial.print(tester);
       thisDigit = char(tester);
       Serial.println("thisDigit: " + thisDigit);
+      mystring += thisDigit;
     }
     Serial.println("mystring Values");
     Serial.println(String(mystring));
