@@ -70,7 +70,7 @@ void loop()
     readInput = "";
   }
 }
-
+/*
 void gcodereader()
 {
   Serial.println("gcodereader was inicated");
@@ -123,6 +123,7 @@ void gcodeSplitter(char letter)
           Serial.println(String(beta));
           delay(1000);
         */
+       /*
         }
         gcodeSplitter(singleletterchar);
       }
@@ -147,6 +148,7 @@ void gcodeSplitter(char letter)
           Serial.println(String(beta));
           delay(1000);
           */
+         /*
         }
         gcodeSplitter(singleletterchar = Serial.read());
       }
@@ -270,6 +272,8 @@ String calDigits(char thisDigit)
   Serial.println(String(mystring));
   return String(mystring);
 }
+*/
+
 String calDigitsSD(char thisDigit)
 {
   mystring = "";
@@ -279,18 +283,15 @@ String calDigitsSD(char thisDigit)
     mystring += thisDigit;
     while (isDigit(thisDigit) || thisDigit == '.')
     {
-      //Serial.println(mystring);
+
       tester = myFile.read();
-      //Serial.println("Tester Byte Value: ");
-     // Serial.println(tester);
-      //Serial.println("Char Value");
-      //Serial.println(char(tester));
+
       thisDigit = char(tester);
       Serial.println("thisDigit: " + String(thisDigit));
       mystring += thisDigit;
     }
     Serial.println("mystring Values");
-    // Serial.println(String(mystring));
+
     Serial.println(mystring);
     return mystring;
   }
