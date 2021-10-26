@@ -6,8 +6,8 @@ Servo servoLinkage;
 #define lOne 100 //REMEMBER lONE and lTwo must be equal to eachother
 #define lTwo 100 //REMEMBER lONE and lTwo must be equal to eachother
 
-double xpos = 60;
-double ypos = 40;
+double xpos = 60.13;
+double ypos = 40.41;
 float c = sqrt(sq(xpos) + sq(ypos));
 float gamma = acos((sq(lOne) + sq(c) - sq(lTwo)) / (2 * lOne * c));
 float beta = 180 - (2 * gamma);
@@ -18,8 +18,8 @@ void setup()
         ;
     }
     // put your setup code here, to run once:
-    servoBase.attach(9);
-    servoLinkage.attach(8);
+    servoBase.attach(2);
+    servoLinkage.attach(3);
     servoBase.write(0);
     servoLinkage.write(0);
 }

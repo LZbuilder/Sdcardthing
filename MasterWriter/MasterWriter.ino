@@ -41,6 +41,9 @@ const int delaytime = 1000; // important
 String val;
 
 double endresult;
+double xendresult;
+double yendresult;
+
 
 byte wholenumber;
 byte remainder;
@@ -420,107 +423,155 @@ void gcodereader(String gcodefile)
 
 void gcodeSplitter(char letter)
 { // Trying to make this function find what is after G1 or G0 and then if find
+  val = "";
+  endresult = 0;
+  xendresult = 0;
+  yendresult = 0;
+  
   if (myFile.available())
   {
+    delay(100);
     switch (letter)
     {
     case 'G':
+      singleletterchar = ' ';
       singleletterchar = char(myFile.read());
 
-      val = calDigits(singleletterchar); // My function that finds a String value of what comes after G
-      Serial.println("Gval: " + String(val));
+      val = calDigitsSD(singleletterchar); // My function that finds a String value of what comes after G
+      delay(5);
+      Serial.println("Gval:");
+      delay(5);
+      Serial.println(val);
 
       endresult = val.toInt();
 
       if (endresult == 1)
       {
-        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E' && singleletterchar != 'F')
+        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E')
         {
-
+          delay(1);
+          Serial.println("In G1 While Loop: ");
+          Serial.println(String(singleletterchar));
           singleletterchar = char(myFile.read());
         }
 
-        sendData('G', 1, 0);
-        gcodeSplitter(singleletterchar);
+        //('G', 1, 0);
+        Serial.println(String(singleletterchar));
+        xpos = xendresult;
+        ypos = yendresult;
+        if (xpos >= 0 && ypos >= 0)
+    {
+        //then do alexanders code
+        c = sqrt(sq(xpos) + sq(ypos));
+        gamma = acos((sq(lOne) + sq(c) - sq(lTwo)) / (2 * lOne * c));
+        beta = 180 - (2 * gamma);
+        Serial.println(gamma);
+        Serial.println(beta);
+        servoBase.write(gamma);
+        servoLinkage.write(beta);
+    }
+        gcodeSplitterSD(singleletterchar);
       }
       else if (endresult == 0)
       {
         Serial.println("YoU dUmB fUcKeR");
-        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E' && singleletterchar != 'F')
+        while (singleletterchar != 'X' && singleletterchar != 'Y' && singleletterchar != 'Z' && singleletterchar != 'E')
         {
-
+          delay(1);
+          Serial.println("In G0 While Loop: " + String(singleletterchar));
           singleletterchar = char(myFile.read());
         }
 
-        sendData('G', 0, 0);
-        gcodeSplitter(singleletterchar);
+        //('G', 0, 0);
+        Serial.println(String(singleletterchar));
+        xpos = xendresult;
+        ypos = yendresult;
+        if (xpos >= 0 && ypos >= 0)
+    {
+        //then do alexanders code
+        c = sqrt(sq(xpos) + sq(ypos));
+        gamma = acos((sq(lOne) + sq(c) - sq(lTwo)) / (2 * lOne * c));
+        beta = 180 - (2 * gamma);
+        Serial.println(gamma);
+        Serial.println(beta);
+        servoBase.write(gamma);
+        servoLinkage.write(beta);
+    }
+        gcodeSplitterSD(singleletterchar);
       }
       else
       {
         Serial.println("Case G but unknow digit: " + String(singleletterchar));
-        gcodeSplitter(singleletterchar);
+        gcodeSplitterSD(singleletterchar);
       }
       break;
     case 'X':
+      singleletterchar = ' ';
+      //Serial.println(String(singleletterchar));
       singleletterchar = char(myFile.read());
+      //Serial.println("Writing singleletterchar:");
+      //Serial.println(singleletterchar);
       if (isDigit(singleletterchar))
       {
+        
+        val = calDigitsSD(singleletterchar);
 
-        val = calDigits(singleletterchar);
+        Serial.println(val);
+        xendresult = val.toDouble();
+        //Serial.println(String(xendresult));
+        Serial.println("X Entire Number: " + String(xendresult));
+        wholenumber = int(xendresult); // or you can just send it over a byte
 
-        //Serial.println(xval);
-        endresult = val.toDouble();
-        Serial.println("X Entire Number: " + String(endresult));
-        wholenumber = int(endresult); // or you can just send it over a byte
-
-        remainder = rem(endresult, wholenumber); // I made a function to find what is after the decimal point!
+        remainder = rem(xendresult, wholenumber); // I made a function to find what is after the decimal point!
 
         Serial.println("xWhole: " + String(wholenumber));
 
         Serial.println("xRemainder: " + String(remainder));
 
-        sendData('X', wholenumber, remainder);
-        gcodeSplitter(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
+        //('X', wholenumber, remainder);
+        gcodeSplitterSD(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
       }
       else
       {
         Serial.println("Case X but no digit: " + String(singleletterchar));
-        gcodeSplitter(singleletterchar);
+        gcodeSplitterSD(singleletterchar);
       }
       break;
     case 'Y':
+      singleletterchar = ' ';
       singleletterchar = char(myFile.read());
       if (isDigit(singleletterchar))
       {
 
-        val = calDigits(singleletterchar);
+        val = calDigitsSD(singleletterchar);
 
         //Serial.println(xval);
-        endresult = val.toDouble();
-        Serial.println("Y Entire Number: " + String(endresult));
-        wholenumber = int(endresult); // or you can just send it over a byte
+        yendresult = val.toDouble();
+        Serial.println("Y Entire Number: " + String(yendresult));
+        wholenumber = int(yendresult); // or you can just send it over a byte
 
-        remainder = rem(endresult, wholenumber); // I made a function to find what is after the decimal point!
+        remainder = rem(yendresult, wholenumber); // I made a function to find what is after the decimal point!
 
         Serial.println("yWhole: " + String(wholenumber));
 
         Serial.println("yRemainder: " + String(remainder));
 
-        sendData('Y', wholenumber, remainder);
-        gcodeSplitter(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
+        //('Y', wholenumber, remainder);
+        gcodeSplitterSD(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
       }
       else
       {
         Serial.println("Case Y but no digit: " + String(singleletterchar));
-        gcodeSplitter(singleletterchar);
+        gcodeSplitterSD(singleletterchar);
       }
       break;
     case 'Z':
+      singleletterchar = ' ';
       singleletterchar = char(myFile.read());
       if (isDigit(singleletterchar))
       {
 
-        val = calDigits(singleletterchar);
+        val = calDigitsSD(singleletterchar);
 
         //Serial.println(xval);
         endresult = val.toDouble();
@@ -533,19 +584,28 @@ void gcodeSplitter(char letter)
 
         Serial.println("zRemainder: " + String(remainder));
 
-        sendData('Z', wholenumber, remainder);
-        gcodeSplitter(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
+        //('Z', wholenumber, remainder);
+        gcodeSplitterSD(singleletterchar = char(myFile.read())); // assuming!! the next letter is Y but could be Z or E
       }
       else
       {
         Serial.println("Case Z but no digit: " + String(singleletterchar));
-        gcodeSplitter(singleletterchar);
+        gcodeSplitterSD(singleletterchar);
       }
+      break;
+    case ' ':
+      Serial.println("Space");
+    break;
+    case '\n': 
+      Serial.println("BackSlashN");
       break;
     default:
 
-      Serial.println("Default Executed: " + String(singleletterchar));
-      gcodeSplitter(singleletterchar = char(myFile.read()));
+      Serial.println("Default Executed: ");
+      Serial.println(String(singleletterchar));
+      singleletterchar = ' ';
+      singleletterchar = char(myFile.read());
+      gcodeSplitterSD(singleletterchar);
       break;
     }
   }
@@ -555,73 +615,3 @@ void gcodeSplitter(char letter)
   }
 }
 
-void sendData(char letter, int datawholenumber, int dataremainder)
-{
-  Wire.beginTransmission(4); // transmit to device #4
-
-  Wire.write(byte(letter));
-
-  Wire.endTransmission();
-
-  Wire.beginTransmission(4); // transmit to device #4
-
-  Wire.write(byte(datawholenumber));
-
-  Wire.endTransmission();
-  delay(50);
-  Wire.beginTransmission(4);
-
-  Wire.write(byte(dataremainder));
-
-  Wire.endTransmission(); // ends the transmission
-  delay(delaytime);
-}
-
-String calDigits(char thisDigit)
-{
-  String mystring = "";
-  if (isDigit(thisDigit))
-  {
-    while (isDigit(thisDigit) || thisDigit == '.')
-    {
-      mystring += thisDigit;
-      thisDigit = char(myFile.read());
-    }
-  }
-  return String(mystring);
-}
-
-int rem(double remainder, short whole)
-{
-  short wholelen = String(whole).length();
-  short result = 0;
-  String rema = String(remainder);
-  short lengthrema = rema.length();
-  String resultstring = "";
-
-  for (short i = 0; i < lengthrema; i++)
-  {
-    while (i < wholelen)
-    {
-      i++;
-    }
-    if (rema[i] == "." || isDigit(rema[i]))
-    {
-
-      if (isDigit(rema[i]))
-      {
-        while (isDigit(rema[i]) || i < lengthrema)
-        {
-          resultstring += rema[i];
-          i++;
-        }
-
-        result = resultstring.toInt();
-      }
-    }
-  }
-
-  //result = 2; //For degbugging
-
-  return result;
-}
