@@ -274,19 +274,19 @@ String calDigitsSD(char thisDigit)
 {
   mystring = "";
   
-  if (isDigit(thisDigit))
+  if (isDigit(thisDigit) || thisDigit == ' ')
   {
     mystring += thisDigit;
     while (isDigit(thisDigit) || thisDigit == '.')
     {
-      Serial.println(mystring);
+      //Serial.println(mystring);
       tester = myFile.read();
-      Serial.println("Tester Byte Value: ");
-      Serial.print(tester);
-      Serial.print(" Char Value");
-      Serial.print(char(tester));
+      //Serial.println("Tester Byte Value: ");
+     // Serial.println(tester);
+      //Serial.println("Char Value");
+      //Serial.println(char(tester));
       thisDigit = char(tester);
-      Serial.println("thisDigit: " + thisDigit);
+      Serial.println("thisDigit: " + String(thisDigit));
       mystring += thisDigit;
     }
     Serial.println("mystring Values");
@@ -353,6 +353,8 @@ void gcodereaderSD(String gcodefile)
       val = "";
       //gets a byte
       singleletterchar = char(myFile.read()); //makes byte to char
+      //Serial.println("Singleletterchar:");
+      //Serial.println(singleletterchar);
       gcodeSplitterSD(singleletterchar);
     }
     myFile.close();
@@ -378,7 +380,9 @@ void gcodeSplitterSD(char letter)
       singleletterchar = char(myFile.read());
 
       val = calDigitsSD(singleletterchar); // My function that finds a String value of what comes after G
+      delay(5);
       Serial.println("Gval:");
+      delay(5);
       Serial.println(val);
 
       endresult = val.toInt();
@@ -419,10 +423,10 @@ void gcodeSplitterSD(char letter)
       break;
     case 'X':
       singleletterchar = ' ';
-      Serial.println(String(singleletterchar));
+      //Serial.println(String(singleletterchar));
       singleletterchar = char(myFile.read());
-      Serial.println("Writing singleletterchar:");
-      Serial.println(singleletterchar);
+      //Serial.println("Writing singleletterchar:");
+      //Serial.println(singleletterchar);
       if (isDigit(singleletterchar))
       {
         
@@ -430,7 +434,7 @@ void gcodeSplitterSD(char letter)
 
         Serial.println(val);
         endresult = val.toDouble();
-        Serial.println(String(endresult));
+        //Serial.println(String(endresult));
         Serial.println("X Entire Number: " + String(endresult));
         wholenumber = int(endresult); // or you can just send it over a byte
 
@@ -505,12 +509,19 @@ void gcodeSplitterSD(char letter)
         gcodeSplitterSD(singleletterchar);
       }
       break;
+    case ' ':
+      Serial.println("Space");
+    break;
+    case '\n': 
+      Serial.println("BackSlashN");
+      break;
     default:
 
       Serial.println("Default Executed: ");
       Serial.println(String(singleletterchar));
       singleletterchar = ' ';
-      gcodeSplitterSD(singleletterchar = char(myFile.read()));
+      singleletterchar = char(myFile.read());
+      gcodeSplitterSD(singleletterchar);
       break;
     }
   }
