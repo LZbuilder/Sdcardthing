@@ -6,9 +6,9 @@ Servo servoLinkage;
 #define lOne 100 //REMEMBER lONE and lTwo must be equal to eachother
 #define lTwo 100 //REMEMBER lONE and lTwo must be equal to eachother
 
-double xdis = 60;
-double ydis = 40;
-float c = sqrt(sq(xdis) + sq(ydis));
+double xpos = 60;
+double ypos = 40;
+float c = sqrt(sq(xpos) + sq(ypos));
 float gamma = acos((sq(lOne) + sq(c) - sq(lTwo)) / (2 * lOne * c));
 float beta = 180 - (2 * gamma);
 void setup()
@@ -27,10 +27,10 @@ void setup()
 void loop()
 {
     // put your main code here, to run repeatedly:
-    if (xdis >= 0 && ydis >= 0)
+    if (xpos >= 0 && ypos >= 0)
     {
         //then do alexanders code
-        c = sqrt(sq(xdis) + sq(ydis));
+        c = sqrt(sq(xpos) + sq(ypos));
         gamma = acos((sq(lOne) + sq(c) - sq(lTwo)) / (2 * lOne * c));
         beta = 180 - (2 * gamma);
         Serial.println(gamma);
