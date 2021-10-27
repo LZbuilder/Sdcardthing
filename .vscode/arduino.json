@@ -1,5 +1,5 @@
 {
     "board": "arduino:avr:uno",
-    "sketch": "SerialGcode\\SerialGcode`.ino",
+    "sketch": "TrigCode\\TrigCode.ino",
     "port": "COM6"
 }
